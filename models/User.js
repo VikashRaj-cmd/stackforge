@@ -1,29 +1,49 @@
-// User model (Mongoose schema)\n
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true, select: false },
-    role: { type: String, enum: ["admin", "member"], default: "member" }
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
   },
-  { timestamps: true }
-);
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false
+  },
+  avatar: {
+    type: String
+  },
+  role: {
+    type: String,
+    enum: ["admin", "member"],
+    default: "member"
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, {
+  timestamps: true,
+  versionKey: false
+});
 
-// Hash password
+// 🔐 Hash Password
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Compare password
-userSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
+// 🔑 Compare Password
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
-
-export default User; // ✅ ES Module export
+export default mongoose.model("User", userSchema);
