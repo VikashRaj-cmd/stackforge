@@ -1,22 +1,25 @@
-// Project routes (/api/v1/projects)\n
 /**
  * 📄 FILE: projectRoutes.js
  * PURPOSE:
- * Handles project-related APIs like create, update, delete projects.
- * Example of protected route using JWT middleware.
+ * Connects project routes with controller logic.
  */
 
 import express from "express";
 import protect from "../middlewares/authMiddleware.js";
+import {
+  createProject,
+  getProjects,
+  getProjectById,
+  updateProject,
+  deleteProject
+} from "../controllers/projectController.js";
 
 const router = express.Router();
 
-// Protected route
-router.get("/", protect, (req, res) => {
-  res.json({
-    message: "Projects fetched",
-    user: req.user
-  });
-});
+router.post("/", protect, createProject);
+router.get("/", protect, getProjects);
+router.get("/:id", protect, getProjectById);
+router.put("/:id", protect, updateProject);
+router.delete("/:id", protect, deleteProject);
 
 export default router;

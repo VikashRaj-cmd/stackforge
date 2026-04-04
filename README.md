@@ -118,3 +118,29 @@ POST /api/comments
 GET /api/labels
 
 ---
+
+## 🔐 Authentication (Stage 08)
+
+### Register
+POST /api/auth/register
+
+### Login
+POST /api/auth/login
+
+### Protected Routes
+Require JWT Token in header:
+
+Authorization: Bearer <token>
+
+---
+
+## 🧪 Postman Testing
+
+### Auth Folder
+- Register User
+- Login User
+
+### Protected Folder
+- Access APIs using JWT token
+
+---
