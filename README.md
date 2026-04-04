@@ -117,8 +117,6 @@ POST /api/comments
 ### Labels
 GET /api/labels
 
----
-
 ## 🔐 Authentication (Stage 08)
 
 ### Register
@@ -143,4 +141,19 @@ Authorization: Bearer <token>
 ### Protected Folder
 - Access APIs using JWT token
 
----
+
+## 📦 CRUD APIs (Stage 09)
+
+### Projects
+- Create Project
+- Get Projects (Pagination)
+- Get Single Project
+- Update Project
+- Delete Project
+
+### Issues
+- Create Issue
+- Get Issues (Filter + Pagination)
+- Update Issue
+- Delete Issue
+
