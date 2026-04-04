@@ -157,3 +157,22 @@ Authorization: Bearer <token>
 - Update Issue
 - Delete Issue
 
+## 🚀 Advanced Features (Stage 10)
+
+### 🔐 Role-Based Access
+- Admin-only routes
+- Secure API restrictions
+
+### 💬 Comments System
+- Add comments to issues
+- Fetch comments by issue
+
+### 🏷 Labels System
+- Create labels (Admin)
+- Fetch labels
+
+### 📊 Activity Logs
+- Track system actions
+
+### ⚠️ Global Error Handling
+- Centralized error middleware

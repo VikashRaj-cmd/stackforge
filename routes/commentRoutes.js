@@ -5,12 +5,12 @@
  */
 
 import express from "express";
+import protect from "../middlewares/authMiddleware.js";
+import { addComment, getComments } from "../controllers/commentController.js";
 
 const router = express.Router();
 
-// POST comment
-router.post("/", (req, res) => {
-  res.json({ message: "Add comment (Coming soon)" });
-});
+router.post("/", protect, addComment);
+router.get("/:issueId", protect, getComments);
 
 export default router;

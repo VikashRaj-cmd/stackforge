@@ -5,12 +5,13 @@
  */
 
 import express from "express";
+import protect from "../middlewares/authMiddleware.js";
+import authorizeRoles from "../middlewares/roleMiddleware.js";
+import { createLabel, getLabels } from "../controllers/labelController.js";
 
 const router = express.Router();
 
-// GET labels
-router.get("/", (req, res) => {
-  res.json({ message: "Get labels (Coming soon)" });
-});
+router.post("/", protect, authorizeRoles("admin"), createLabel);
+router.get("/", protect, getLabels);
 
 export default router;

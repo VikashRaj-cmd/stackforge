@@ -16,6 +16,7 @@ import projectRoutes from "./routes/projectRoutes.js";
 import issueRoutes from "./routes/issueRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import labelRoutes from "./routes/labelRoutes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const app = express();
 
@@ -32,5 +33,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/issues", issueRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/labels", labelRoutes);
+
+app.use(errorHandler);
 
 export default app;
