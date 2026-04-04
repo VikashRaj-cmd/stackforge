@@ -90,33 +90,31 @@ Vikash Rajput
 
 ---
 
-# 🎯 What You Completed
+## 📡 API Routes (Stage 07)
 
-✔ Real test data  
-✔ Database reset system  
-✔ Full backend structure  
-✔ Professional README  
+### Health
+GET /api/health
 
-👉 Now your project looks like **real industry backend** 🔥
+### Auth
+POST /api/auth/register
+POST /api/auth/login
+
+### Users
+GET /api/users
+GET /api/users/:id
+
+### Projects
+GET /api/projects
+POST /api/projects
+
+### Issues
+GET /api/issues
+POST /api/issues
+
+### Comments
+POST /api/comments
+
+### Labels
+GET /api/labels
 
 ---
-
-# 🚀 NEXT STEP
-
-👉 **STAGE 07 — Route Structure**
-
-We will:
-- Create all API routes
-- Connect endpoints
-- Test using Postman
-
----
-
-# ⚡ Reply to Continue
-
-👉 **"Continue Stage 07"**
-
-I’ll give:
-- Full route files
-- API structure (like real company)
-- Postman testing guide 🚀

@@ -3,21 +3,19 @@
  * 📄 FILE: authRoutes.js
  * PURPOSE:
  * Handles authentication routes like Register & Login.
- * Later we will connect controllers and JWT authentication.
+ * Defines authentication routes and connects controller.
  */
 
 import express from "express";
+import { registerUser, loginUser } from "../controllers/authController.js";
+import { registerValidator, loginValidator } from "../validators/authValidator.js";
 
 const router = express.Router();
 
 // POST /api/auth/register
-router.post("/register", (req, res) => {
-  res.json({ message: "Register API (Coming soon)" });
-});
+router.post("/register", registerValidator, registerUser);
 
 // POST /api/auth/login
-router.post("/login", (req, res) => {
-  res.json({ message: "Login API (Coming soon)" });
-});
+router.post("/login", loginValidator, loginUser);
 
 export default router;
