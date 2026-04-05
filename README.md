@@ -176,3 +176,26 @@ Authorization: Bearer <token>
 
 ### ⚠️ Global Error Handling
 - Centralized error middleware
+
+## 🌍 Deployment (Stage 11)
+
+This project is production-ready and deployed.
+
+### 🔐 Security Features
+- Helmet (secure headers)
+- Rate Limiting (prevent abuse)
+- Mongo Sanitize (prevent injection)
+
+### 📊 Logging
+- Winston logger (error + combined logs)
+
+---
+## Input Validation (Stage 12)
+
+All incoming API requests are validated using express-validator.
+
+### Features:
+- Prevent invalid data from entering database
+- Validate request body, params, query
+- Centralized validation error handling
+

@@ -12,10 +12,12 @@ import {
   updateIssue,
   deleteIssue
 } from "../controllers/issueController.js";
+import validate from "../middlewares/validate.js";
+import { createIssueValidator } from "../validators/issueValidator.js";
 
 const router = express.Router();
 
-router.post("/", protect, createIssue);
+router.post("/", createIssueValidator, validate, createIssue);
 router.get("/", protect, getIssues);
 router.put("/:id", protect, updateIssue);
 router.delete("/:id", protect, deleteIssue);

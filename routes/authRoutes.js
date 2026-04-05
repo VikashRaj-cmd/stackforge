@@ -9,13 +9,14 @@
 import express from "express";
 import { registerUser, loginUser } from "../controllers/authController.js";
 import { registerValidator, loginValidator } from "../validators/authValidator.js";
+import validate from "../middlewares/validate.js";
 
 const router = express.Router();
 
 // POST /api/auth/register
-router.post("/register", registerValidator, registerUser);
+router.post("/register", registerValidator, validate, registerUser);
 
 // POST /api/auth/login
-router.post("/login", loginValidator, loginUser);
+router.post("/login", loginValidator, validate, loginUser);
 
 export default router;
