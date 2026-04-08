@@ -3,11 +3,15 @@
  * 📄 FILE: errorHandler.js
  * PURPOSE:
  * Centralized error handling for cleaner code.
+  * Catch all errors in one place
  */
 
 const errorHandler = (err, req, res, next) => {
-  res.status(res.statusCode || 500).json({
-    message: err.message || "Server Error"
+  console.error("ERROR:", err);
+
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
   });
 };
 

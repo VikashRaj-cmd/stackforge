@@ -8,6 +8,7 @@ import app from "./app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import logger from "./utils/logger.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 dotenv.config();
 
