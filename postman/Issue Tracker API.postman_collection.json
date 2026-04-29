@@ -1,0 +1,1239 @@
+{
+	"info": {
+		"_postman_id": "issue-tracker-api-v1",
+		"name": "Issue Tracker API",
+		"description": "Complete API collection for Issue Tracker backend with authentication, projects, issues, comments, labels, and validation tests.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "1.0.0"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Vikash Raj\",\n  \"email\": \"vikash@example.com\",\n  \"password\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Get token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"token\", jsonData.data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"vikash@example.com\",\n  \"password\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Logout User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "me"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Vikash Updated\",\n  \"avatar\": \"https://example.com/avatar.png\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Save projectId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"projectId\", jsonData.data._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Issue Tracker Project\",\n  \"description\": \"This is my backend issue tracker project\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Project By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Project",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Issue Tracker Project\",\n  \"description\": \"Updated description\",\n  \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Project",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Project Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"developer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/members",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "members"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Remove Project Member",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/members/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "members", "{{userId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Issues",
+			"item": [
+				{
+					"name": "Create Issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Save issueId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"issueId\", jsonData.data._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Login Bug\",\n  \"description\": \"User cannot log in with correct password\",\n  \"type\": \"bug\",\n  \"priority\": \"high\",\n  \"project\": \"{{projectId}}\",\n  \"assignee\": \"{{userId}}\",\n  \"labels\": [],\n  \"dueDate\": \"2026-04-30T00:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Issues",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Issues With Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues?project={{projectId}}&status=open&priority=high&page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues"],
+							"query": [
+								{"key": "project", "value": "{{projectId}}"},
+								{"key": "status", "value": "open"},
+								{"key": "priority", "value": "high"},
+								{"key": "page", "value": "1"},
+								{"key": "limit", "value": "10"}
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Issues",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues?search=login&page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues"],
+							"query": [
+								{"key": "search", "value": "login"},
+								{"key": "page", "value": "1"},
+								{"key": "limit", "value": "10"}
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Issue By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Issue",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Login Bug\",\n  \"description\": \"Updated issue description\",\n  \"priority\": \"critical\",\n  \"dueDate\": \"2026-05-05T00:00:00.000Z\",\n  \"labels\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Issue",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Issue Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"in-progress\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "status"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Assign Issue",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"assigneeId\": \"{{userId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/assign",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "assign"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Issue Activity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/activity",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "activity"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Add Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Save commentId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"commentId\", jsonData.data._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"body\": \"I am working on this issue now.\",\n  \"parent\": null\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/comments",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "comments"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Comments By Issue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/comments",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "comments"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"body\": \"Updated comment text.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/comments/{{commentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "comments", "{{commentId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/comments/{{commentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "comments", "{{commentId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Labels",
+			"item": [
+				{
+					"name": "Create Label",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Save labelId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"labelId\", jsonData.data._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Backend\",\n  \"color\": \"#000000\",\n  \"description\": \"Backend related issue\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/labels",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "labels"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Labels By Project",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/labels",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "labels"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Label",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Backend Updated\",\n  \"color\": \"#111111\",\n  \"description\": \"Updated backend label\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/labels/{{labelId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "labels", "{{labelId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Label",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/labels/{{labelId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "labels", "{{labelId}}"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Validation Tests",
+			"item": [
+				{
+					"name": "Invalid Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"email\": \"wrong\",\n  \"password\": \"123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Invalid Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"wrong\",\n  \"password\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Invalid Project Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Invalid Issue Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"\",\n  \"project\": \"wrongid\",\n  \"type\": \"wrongtype\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Invalid Comment Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"body\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/issues/{{issueId}}/comments",
+							"host": ["{{baseUrl}}"],
+							"path": ["issues", "{{issueId}}", "comments"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Invalid Label Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"color\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/{{projectId}}/labels",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "{{projectId}}", "labels"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
