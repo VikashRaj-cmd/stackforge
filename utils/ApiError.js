@@ -1,0 +1,1 @@
+// ApiError class placeholder

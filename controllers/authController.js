@@ -1,77 +1,104 @@
 // Authentication controller functions (login, register, etc.)\n
 /**
- * 📄 FILE: authController.js
- * PURPOSE:
- * Contains business logic for authentication.
- * - Register user
- * - Login user
+ * authController.js
+ *
+ * WHY:
+ * Handles authentication logic:
+ * - register
+ * - login
+ * - logout
+ * - get current logged-in user
  */
 
-import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import generateToken from "../utils/generateToken.js";
+import AppError from "../utils/AppError.js";
+import catchAsync from "../utils/catchAsync.js";
+import config from "../config/config.js";
 
-// 🔐 REGISTER
-export const registerUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    // Check user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create user
-    const user = await User.create({
-      name,
-      email,
-      password
-    });
-
-    // Generate token
-    const token = generateToken(user._id);
-
-    res.status(201).json({
-      message: "User registered",
-      token
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+/**
+ * Helper function to generate JWT token
+ */
+const signToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    config.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
 };
 
-// 🔐 LOGIN
-export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+/**
+ * Register a new user
+ */
+export const register = catchAsync(async (req, res, next) => {
+  const { name, email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email }).select("+password");
-    if (!user || !user.password) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    // Generate token
-    const token = generateToken(user._id);
-
-    res.json({
-      message: "Login successful",
-      token
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return next(new AppError("Email is already registered", 409));
   }
-};
+
+  const user = await User.create({ name, email, password });
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+});
+
+/**
+ * Login existing user and return JWT
+ */
+export const login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new AppError("Invalid credentials", 401));
+  }
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    return next(new AppError("Invalid credentials", 401));
+  }
+
+  const token = signToken(user);
+
+  res.status(200).json({
+    success: true,
+    token,
+    data: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+});
+
+/**
+ * Logout route
+ * Since JWT is stateless, backend usually just tells client to remove token.
+ */
+export const logout = catchAsync(async (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully. Remove token on client side.",
+  });
+});
+
+/**
+ * Return current authenticated user
+ */
+export const getMe = catchAsync(async (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: req.user,
+  });
+});

@@ -1,16 +1,29 @@
 // Global error handling middleware\n
 /**
- * 📄 FILE: errorHandler.js
+ * FILE: middlewares/errorHandler.js
  * PURPOSE:
- * Centralized error handling for cleaner code.
-  * Catch all errors in one place
+ * Global error middleware.
+ * All operational errors and unexpected errors end here and are formatted once.
  */
 
-const errorHandler = (err, req, res, next) => {
-  console.error("ERROR:", err);
+import logger from "../config/logger.js";
 
-  res.status(err.statusCode || 500).json({
+const errorHandler = (err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const status = err.status || "error";
+
+  logger.error({
+    message: err.message,
+    statusCode,
+    stack: err.stack,
+    requestId: req.requestId || null,
+    method: req.method,
+    url: req.originalUrl,
+  });
+
+  res.status(statusCode).json({
     success: false,
+    status,
     message: err.message || "Internal Server Error",
   });
 };

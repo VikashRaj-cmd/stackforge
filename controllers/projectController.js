@@ -1,98 +1,168 @@
 // Project controller functions (create, read, update, delete projects)\n
 /**
- * 📄 FILE: projectController.js
- * PURPOSE:
- * Handles all business logic related to Projects.
- * Includes:
- * - Create Project
- * - Get All Projects
- * - Get Single Project
- * - Update Project
- * - Delete Project
+ * projectController.js
+ *
+ * WHY:
+ * Handles project CRUD and project membership.
+ * Includes ownership checks where required.
  */
 
 import Project from "../models/Project.js";
+import AppError from "../utils/AppError.js";
+import catchAsync from "../utils/catchAsync.js";
 
-// ✅ CREATE PROJECT
-export const createProject = async (req, res) => {
-  try {
-    const { title, description } = req.body;
+/**
+ * Create a project
+ */
+export const createProject = catchAsync(async (req, res) => {
+  const { title, description } = req.body;
 
-    const project = await Project.create({
-      title,
-      description,
-      owner: req.user._id, // from auth middleware
-      members: [{ user: req.user._id, role: "owner" }]
-    });
+  const project = await Project.create({
+    title,
+    description,
+    owner: req.user._id,
+    members: [{ user: req.user._id, role: "owner" }],
+  });
 
-    res.status(201).json(project);
+  res.status(201).json({
+    success: true,
+    data: project,
+  });
+});
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+/**
+ * Get active projects
+ */
+export const getProjects = catchAsync(async (req, res) => {
+  const projects = await Project.find({ status: "active" })
+    .populate("owner", "name email")
+    .lean();
+
+  res.status(200).json({
+    success: true,
+    results: projects.length,
+    data: projects,
+  });
+});
+
+/**
+ * Get single project
+ */
+export const getProjectById = catchAsync(async (req, res, next) => {
+  const project = await Project.findById(req.params.id)
+    .populate("owner", "name email")
+    .populate("members.user", "name email")
+    .lean();
+
+  if (!project) {
+    return next(new AppError("Project not found", 404));
   }
-};
 
-// ✅ GET ALL PROJECTS (with pagination)
-export const getProjects = async (req, res) => {
-  try {
-    const page = Number(req.query.page) || 1;
-    const limit = 5;
+  res.status(200).json({
+    success: true,
+    data: project,
+  });
+});
 
-    const projects = await Project.find()
-      .skip((page - 1) * limit)
-      .limit(limit);
+/**
+ * Update project
+ */
+export const updateProject = catchAsync(async (req, res, next) => {
+  const { title, description, status } = req.body;
 
-    res.json({
-      page,
-      results: projects.length,
-      projects
-    });
+  const updateData = {};
+  if (title !== undefined) updateData.title = title;
+  if (description !== undefined) updateData.description = description;
+  if (status !== undefined) updateData.status = status;
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  const project = await Project.findByIdAndUpdate(req.params.id, updateData, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!project) {
+    return next(new AppError("Project not found", 404));
   }
-};
 
-// ✅ GET SINGLE PROJECT
-export const getProjectById = async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id);
+  res.status(200).json({
+    success: true,
+    data: project,
+  });
+});
 
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
-    }
+/**
+ * Delete project
+ */
+export const deleteProject = catchAsync(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
 
-    res.json(project);
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (!project) {
+    return next(new AppError("Project not found", 404));
   }
-};
 
-// ✅ UPDATE PROJECT
-export const updateProject = async (req, res) => {
-  try {
-    const project = await Project.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-
-    res.json(project);
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (project.owner.toString() !== req.user.id.toString()) {
+    return next(new AppError("Only project owner can delete the project", 403));
   }
-};
 
-// ✅ DELETE PROJECT
-export const deleteProject = async (req, res) => {
-  try {
-    await Project.findByIdAndDelete(req.params.id);
+  await Project.findByIdAndDelete(req.params.id);
 
-    res.json({ message: "Project deleted" });
+  res.status(204).send();
+});
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+/**
+ * Add member to project
+ */
+export const addMember = catchAsync(async (req, res, next) => {
+  const { userId, role } = req.body;
+
+  const project = await Project.findById(req.params.id);
+  if (!project) {
+    return next(new AppError("Project not found", 404));
   }
-};
+
+  if (project.owner.toString() !== req.user.id.toString()) {
+    return next(new AppError("Only project owner can add members", 403));
+  }
+
+  const alreadyMember = project.members.some(
+    (member) => member.user.toString() === userId
+  );
+
+  if (alreadyMember) {
+    return next(new AppError("User is already a project member", 409));
+  }
+
+  project.members.push({ user: userId, role });
+  await project.save();
+
+  res.status(200).json({
+    success: true,
+    data: project,
+  });
+});
+
+/**
+ * Remove member from project
+ */
+export const removeMember = catchAsync(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    return next(new AppError("Project not found", 404));
+  }
+
+  if (project.owner.toString() !== req.user.id.toString()) {
+    return next(new AppError("Only project owner can remove members", 403));
+  }
+
+  project.members = project.members.filter(
+    (member) => member.user.toString() !== req.params.userId
+  );
+
+  await project.save();
+
+  res.status(200).json({
+    success: true,
+    data: project,
+  });
+});

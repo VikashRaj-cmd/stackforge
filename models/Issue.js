@@ -60,6 +60,12 @@ issueSchema.index({ assignee: 1 });
 issueSchema.index({ status: 1 });
 issueSchema.index({ priority: 1 });
 
+/**
+ * Compound index for common filtering pattern:
+ * project + status + priority
+ */
+issueSchema.index({ project: 1, status: 1, priority: 1 });
+
 // 🔎 Search index
 issueSchema.index({ title: "text" });
 

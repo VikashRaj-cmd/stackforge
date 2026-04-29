@@ -1,16 +1,23 @@
 // Database configuration and connection setup
+/**
+ * database.js
+ *
+ * WHY:
+ * Handles MongoDB connection logic only.
+ */
+
 import mongoose from "mongoose";
-import { MONGODB_URI } from "./config.js";
+import config from "./config.js";
+import logger from "./logger.js";
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(MONGODB_URI);
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    await mongoose.connect(config.MONGODB_URI);
+    logger.info({ message: `MongoDB connected: ${mongoose.connection.host}` });
   } catch (error) {
-    console.error("❌ DB Connection Failed:", error.message);
+    logger.error({ message: `Database connection failed: ${error.message}` });
     process.exit(1);
   }
 };
 
 export default connectDB;
-

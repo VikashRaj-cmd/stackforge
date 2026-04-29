@@ -1,19 +1,27 @@
 /**
- * 📄 FILE: labelRoutes.js
- * PURPOSE:
- * Manage labels/tags for issues.
+ * labelRoutes.js
+ *
+ * WHY:
+ * Labels are nested under projects, so mergeParams is required
+ * to access :projectId from parent route.
  */
 
 import express from "express";
-import protect from "../middlewares/authMiddleware.js";
-import authorizeRoles from "../middlewares/roleMiddleware.js";
-import { createLabel, getLabels } from "../controllers/labelController.js";
+import protect from "../middlewares/protect.js";
 import validate from "../middlewares/validate.js";
 import { createLabelValidator } from "../validators/labelValidator.js";
+import {
+  getLabels,
+  createLabel,
+  updateLabel,
+  deleteLabel,
+} from "../controllers/labelController.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.post("/", createLabelValidator, validate, createLabel);
 router.get("/", protect, getLabels);
+router.post("/", protect, createLabelValidator, validate, createLabel);
+router.patch("/:id", protect, updateLabel);
+router.delete("/:id", protect, deleteLabel);
 
 export default router;

@@ -1,49 +1,70 @@
 /**
- * 📄 FILE: server.js
- * PURPOSE:
- * Starts server, connects database, and uses Winston logger.
+ * server.js
+ *
+ * WHY:
+ * Bootstraps the application:
+ * - validates environment
+ * - connects database
+ * - starts server
+ * - handles graceful shutdown
  */
 
 import app from "./app.js";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import logger from "./utils/logger.js";
-import errorHandler from "./middlewares/errorHandler.js";
+import config from "./config/config.js";
+import connectDB from "./config/database.js";
+import logger from "./config/logger.js";
+import validateEnv from "./utils/validateEnv.js";
 
-dotenv.config();
-
-const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  logger.error("MONGODB_URI is not set in environment variables");
+/**
+ * Validate environment before starting anything.
+ */
+try {
+  validateEnv();
+} catch (error) {
+  logger.error({ message: error.message });
   process.exit(1);
 }
 
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    logger.info("✅ DB Connected");
+let server;
 
-    const server = app.listen(PORT, () => {
-      logger.info(`🚀 Server running on port ${PORT}`);
-    });
+/**
+ * Start server only after successful DB connection
+ */
+const startServer = async () => {
+  try {
+    await connectDB();
 
-    // Graceful shutdown
-    const gracefulShutdown = () => {
-      logger.info("Received shutdown signal, closing server...");
-      server.close(() => {
-        mongoose.connection.close(false, () => {
-          logger.info("Mongo connection closed. Exiting process.");
-          process.exit(0);
-        });
+    server = app.listen(config.PORT, () => {
+      logger.info({
+        message: `Server running on port ${config.PORT}`,
+        env: config.NODE_ENV,
       });
-    };
-
-    process.on("SIGINT", gracefulShutdown);
-    process.on("SIGTERM", gracefulShutdown);
-
-  })
-  .catch(err => {
-    logger.error("DB connection error: " + (err.message || err));
+    });
+  } catch (error) {
+    logger.error({ message: error.message });
     process.exit(1);
-  });
+  }
+};
+
+/**
+ * Graceful shutdown handler
+ */
+const gracefulShutdown = (signal) => {
+  logger.info({ message: `${signal} received. Starting graceful shutdown...` });
+
+  if (server) {
+    server.close(async () => {
+      await mongoose.connection.close();
+      logger.info({ message: "HTTP server closed and MongoDB connection closed." });
+      process.exit(0);
+    });
+  } else {
+    process.exit(0);
+  }
+};
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+
+startServer();

@@ -2,17 +2,15 @@
  * commentValidator.js
  *
  * WHY:
- * Validate comment creation
+ * Validates nested issue comments.
  */
 
 import { body } from "express-validator";
 
 export const createCommentValidator = [
-  body("issue")
+  body("body").trim().notEmpty().withMessage("Comment body is required"),
+  body("parent")
+    .optional({ nullable: true, checkFalsy: true })
     .isMongoId()
-    .withMessage("Valid issue ID required"),
-
-  body("body")
-    .notEmpty()
-    .withMessage("Comment body is required"),
+    .withMessage("Parent comment ID must be valid"),
 ];

@@ -1,18 +1,27 @@
 /**
- * 📄 FILE: commentRoutes.js
- * PURPOSE:
- * Manage comments on issues.
+ * commentRoutes.js
+ *
+ * WHY:
+ * Comments are nested under issues, so mergeParams is required
+ * to access :issueId from parent route.
  */
 
 import express from "express";
-import protect from "../middlewares/authMiddleware.js";
-import { addComment, getComments } from "../controllers/commentController.js";
+import protect from "../middlewares/protect.js";
 import validate from "../middlewares/validate.js";
 import { createCommentValidator } from "../validators/commentValidator.js";
+import {
+  getComments,
+  addComment,
+  updateComment,
+  deleteComment,
+} from "../controllers/commentController.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.post("/", createCommentValidator, validate, addComment);
-router.get("/:issueId", protect, getComments);
+router.get("/", protect, getComments);
+router.post("/", protect, createCommentValidator, validate, addComment);
+router.patch("/:id", protect, updateComment);
+router.delete("/:id", protect, deleteComment);
 
 export default router;

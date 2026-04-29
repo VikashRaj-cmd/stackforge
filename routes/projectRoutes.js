@@ -1,25 +1,37 @@
 /**
- * 📄 FILE: projectRoutes.js
- * PURPOSE:
- * Connects project routes with controller logic.
+ * projectRoutes.js
+ *
+ * WHY:
+ * Defines all project-related endpoints.
  */
 
 import express from "express";
-import protect from "../middlewares/authMiddleware.js";
+import protect from "../middlewares/protect.js";
+import validate from "../middlewares/validate.js";
+import {
+  createProjectValidator,
+  projectIdValidator,
+} from "../validators/projectValidator.js";
 import {
   createProject,
   getProjects,
   getProjectById,
   updateProject,
-  deleteProject
+  deleteProject,
+  addMember,
+  removeMember,
 } from "../controllers/projectController.js";
 
 const router = express.Router();
 
-router.post("/", protect, createProject);
 router.get("/", protect, getProjects);
-router.get("/:id", protect, getProjectById);
-router.put("/:id", protect, updateProject);
-router.delete("/:id", protect, deleteProject);
+router.post("/", protect, createProjectValidator, validate, createProject);
+
+router.get("/:id", protect, projectIdValidator, validate, getProjectById);
+router.patch("/:id", protect, projectIdValidator, validate, updateProject);
+router.delete("/:id", protect, projectIdValidator, validate, deleteProject);
+
+router.post("/:id/members", protect, projectIdValidator, validate, addMember);
+router.delete("/:id/members/:userId", protect, projectIdValidator, validate, removeMember);
 
 export default router;
