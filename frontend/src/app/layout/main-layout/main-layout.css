@@ -1,0 +1,32 @@
+/**
+ * main-layout.component.css
+ *
+ * WHY:
+ * Controls the main dashboard layout.
+ */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fb;
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  margin-left: 270px;
+}
+
+.page-content {
+  padding: 28px;
+}
+
+@media (max-width: 900px) {
+  .main-area {
+    margin-left: 0;
+  }
+
+  .page-content {
+    padding: 18px;
+  }
+}

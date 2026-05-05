@@ -1,0 +1,18 @@
+<!--
+  main-layout.component.html
+
+  WHY:
+  Creates professional dashboard layout with fixed sidebar and top navbar.
+-->
+
+<div class="app-shell">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-area">
+    <app-navbar></app-navbar>
+
+    <section class="page-content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

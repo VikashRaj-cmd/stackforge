@@ -1,0 +1,306 @@
+/**
+ * dashboard.component.css
+ *
+ * WHY:
+ * Professional dashboard UI with cards, stats, panels and responsive design.
+ */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-card {
+  min-height: 260px;
+  border-radius: 28px;
+  padding: 34px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.45), transparent 30%),
+    linear-gradient(135deg, #1e1b4b, #312e81 45%, #0f172a);
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(30, 27, 75, 0.25);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #a5b4fc;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-card h2 {
+  margin: 0;
+  max-width: 720px;
+  font-size: 38px;
+  line-height: 1.1;
+}
+
+.hero-text {
+  max-width: 650px;
+  color: #dbeafe;
+  line-height: 1.7;
+  margin: 18px 0 24px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.primary-btn,
+.secondary-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primary-btn {
+  background: #22c55e;
+  color: #052e16;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.hero-visual {
+  position: relative;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.circle.one {
+  width: 190px;
+  height: 190px;
+  right: 30px;
+  top: 10px;
+}
+
+.circle.two {
+  width: 110px;
+  height: 110px;
+  right: 190px;
+  bottom: 20px;
+}
+
+.mini-card {
+  position: absolute;
+  right: 44px;
+  bottom: 38px;
+  width: 230px;
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(10px);
+  display: flex;
+  gap: 14px;
+}
+
+.mini-card p {
+  margin: 4px 0 0;
+  color: #dbeafe;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 22px;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: #eef2ff;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.stat-card p {
+  margin: 0;
+  color: #64748b;
+}
+
+.stat-card h3 {
+  margin: 6px 0;
+  color: #0f172a;
+  font-size: 28px;
+}
+
+.stat-card span {
+  color: #16a34a;
+  font-size: 13px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.panel-header button {
+  border: none;
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 9px 13px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.issue-list {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.issue-row {
+  padding: 16px;
+  border-radius: 16px;
+  background: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.issue-row h4 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.issue-row p {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priority,
+.status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.priority.high {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.priority.medium {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.priority.critical {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.progress-box {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.progress-item span {
+  display: block;
+  margin-bottom: 8px;
+  color: #334155;
+  font-weight: 700;
+}
+
+.bar {
+  height: 12px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.bar div {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6366f1, #22c55e);
+}
+
+@media (max-width: 1100px) {
+  .stats-grid,
+  .content-grid,
+  .hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-card h2 {
+    font-size: 28px;
+  }
+
+  .issue-row {
+    flex-direction: column;
+  }
+}

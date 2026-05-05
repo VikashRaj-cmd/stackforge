@@ -1,0 +1,101 @@
+<!--
+  dashboard.component.html
+
+  WHY:
+  First professional landing page after login.
+  Later data will come from backend APIs.
+-->
+
+<section class="dashboard">
+  <div class="hero-card">
+    <div>
+      <p class="eyebrow">Full Stack MEAN Project</p>
+      <h2>Manage bugs, projects, labels and team workflow in one place.</h2>
+      <p class="hero-text">
+        Your backend APIs are ready. This Angular frontend will connect module by module:
+        Auth, Projects, Issues, Comments, Labels, and Users.
+      </p>
+
+      <div class="hero-actions">
+        <button class="primary-btn">Create Issue</button>
+        <button class="secondary-btn">View Projects</button>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="circle one"></div>
+      <div class="circle two"></div>
+
+      <div class="mini-card">
+        <mat-icon>whatshot</mat-icon>
+        <div>
+          <strong>Critical Bugs</strong>
+          <p>8 need attention</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    @for (stat of stats; track stat.title) {
+      <article class="stat-card">
+        <div class="stat-icon">
+          <mat-icon>{{ stat.icon }}</mat-icon>
+        </div>
+        <div>
+          <p>{{ stat.title }}</p>
+          <h3>{{ stat.value }}</h3>
+          <span>{{ stat.trend }}</span>
+        </div>
+      </article>
+    }
+  </div>
+
+  <div class="content-grid">
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Recent Issues</h3>
+        <button>View All</button>
+      </div>
+
+      <div class="issue-list">
+        @for (issue of recentIssues; track issue.title) {
+          <div class="issue-row">
+            <div>
+              <h4>{{ issue.title }}</h4>
+              <p>{{ issue.project }}</p>
+            </div>
+
+            <div class="badges">
+              <span class="priority" [class]="issue.priority">{{ issue.priority }}</span>
+              <span class="status">{{ issue.status }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Workflow Health</h3>
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-item">
+          <span>Open</span>
+          <div class="bar"><div style="width: 72%"></div></div>
+        </div>
+
+        <div class="progress-item">
+          <span>In Progress</span>
+          <div class="bar"><div style="width: 55%"></div></div>
+        </div>
+
+        <div class="progress-item">
+          <span>Resolved</span>
+          <div class="bar"><div style="width: 84%"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

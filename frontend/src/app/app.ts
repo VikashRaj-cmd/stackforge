@@ -1,12 +1,20 @@
-import { Component, signal } from '@angular/core';
+/**
+ * app.component.ts
+ *
+ * WHY:
+ * Root component of Angular application.
+ * It only acts as the shell where routed pages are rendered.
+ */
+
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('frontend');
+  title = 'Issue Tracker';
 }

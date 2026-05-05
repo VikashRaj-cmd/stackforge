@@ -1,0 +1,37 @@
+<!--
+  sidebar.component.html
+
+  WHY:
+  Professional sidebar navigation for project modules.
+-->
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">IT</div>
+    <div>
+      <h2>Issue Tracker</h2>
+      <p>MEAN Dashboard</p>
+    </div>
+  </div>
+
+  <nav class="nav-list">
+    @for (item of navItems; track item.label) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+        class="nav-item"
+      >
+        <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="sidebar-card">
+    <p class="small-text">Backend Status</p>
+    <h3>API Ready</h3>
+    <span class="status-dot"></span>
+    <span class="status-text">Connected Soon</span>
+  </div>
+</aside>
