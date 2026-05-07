@@ -1,0 +1,184 @@
+<section class="auth-page">
+
+  <div class="auth-info">
+
+    <div class="brand-box">
+      <mat-icon>admin_panel_settings</mat-icon>
+      <h1>Secure Access</h1>
+    </div>
+
+    <h2>
+      Build your project workflow with a professional
+      MEAN stack dashboard.
+    </h2>
+
+    <div class="info-grid">
+
+      <div>
+        <mat-icon>folder_managed</mat-icon>
+        <span>Project management</span>
+      </div>
+
+      <div>
+        <mat-icon>bug_report</mat-icon>
+        <span>Issue tracking</span>
+      </div>
+
+      <div>
+        <mat-icon>history</mat-icon>
+        <span>Activity audit logs</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <mat-card class="auth-card">
+
+    <mat-card-header>
+      <mat-card-title>Create Account</mat-card-title>
+
+      <mat-card-subtitle>
+        Start managing your issue tracking workflow
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      @if (errorMessage) {
+        <div class="error-box">
+          <mat-icon>error</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="success-box">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ successMessage }}</span>
+        </div>
+      }
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <!-- NAME -->
+
+        <mat-form-field appearance="outline">
+          <mat-label>Full name</mat-label>
+
+          <mat-icon matPrefix>person</mat-icon>
+
+          <input
+            matInput
+            type="text"
+            formControlName="name"
+            placeholder="Vikash Raj"
+          />
+
+          @if (
+            registerForm.get('name')?.touched &&
+            registerForm.get('name')?.invalid
+          ) {
+            <mat-error>
+              Name must be at least 3 characters
+            </mat-error>
+          }
+
+        </mat-form-field>
+
+        <!-- EMAIL -->
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email address</mat-label>
+
+          <mat-icon matPrefix>mail</mat-icon>
+
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="vikash@example.com"
+          />
+
+          @if (
+            registerForm.get('email')?.touched &&
+            registerForm.get('email')?.invalid
+          ) {
+            <mat-error>
+              Valid email is required
+            </mat-error>
+          }
+
+        </mat-form-field>
+
+        <!-- PASSWORD -->
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+
+          <mat-icon matPrefix>lock</mat-icon>
+
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Minimum 6 characters"
+          />
+
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+          >
+            <mat-icon>
+              {{ hidePassword ? 'visibility' : 'visibility_off' }}
+            </mat-icon>
+          </button>
+
+          @if (
+            registerForm.get('password')?.touched &&
+            registerForm.get('password')?.invalid
+          ) {
+            <mat-error>
+              Password must be at least 6 characters
+            </mat-error>
+          }
+
+        </mat-form-field>
+
+        <!-- SUBMIT BUTTON -->
+
+        <button
+          mat-flat-button
+          color="primary"
+          class="submit-btn"
+          type="submit"
+          [disabled]="isLoading"
+        >
+
+          @if (isLoading) {
+            <mat-spinner diameter="22"></mat-spinner>
+          } @else {
+            <ng-container>
+              <span>Create Account</span>
+              <mat-icon>person_add</mat-icon>
+            </ng-container>
+          }
+
+        </button>
+
+      </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+      <p>
+        Already have an account?
+        <a routerLink="/login">Login</a>
+      </p>
+    </mat-card-actions>
+
+  </mat-card>
+
+</section>
