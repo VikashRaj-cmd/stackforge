@@ -3,10 +3,12 @@
  *
  * WHY:
  * Sidebar gives quick navigation to all main modules.
+ * Uses Angular Material icons instead of emojis.
  */
 
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+
 import { MatIconModule } from '@angular/material/icon';
 
 interface NavItem {
@@ -17,7 +19,6 @@ interface NavItem {
 
 @Component({
   selector: 'app-sidebar',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive, MatIconModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
@@ -28,6 +29,6 @@ export class Sidebar {
     { label: 'Projects', icon: 'folder', route: '/projects' },
     { label: 'Issues', icon: 'bug_report', route: '/issues' },
     { label: 'Users', icon: 'group', route: '/users' },
-    { label: 'Labels', icon: 'label', route: '/labels' },
+    { label: 'Labels', icon: 'sell', route: '/labels' },
   ];
 }

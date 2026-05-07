@@ -1,16 +1,13 @@
 <!--
-  navbar.component.html
+  navbar.html
 
   WHY:
-  Top navbar gives dashboard a professional admin-panel look.
+  Top navbar for search, profile, and logout.
 -->
 
 <header class="navbar">
   <div>
-    <p class="welcome">
-      <mat-icon>waving_hand</mat-icon>
-      Welcome back
-    </p>
+    <p class="welcome">Welcome back</p>
     <h1>Issue Tracking Dashboard</h1>
   </div>
 
@@ -22,12 +19,18 @@
 
     <div class="profile">
       <div class="avatar">
-        <mat-icon>account_circle</mat-icon>
+        <mat-icon>person</mat-icon>
       </div>
+
       <div>
-        <h4>Vikash</h4>
-        <p>Admin</p>
+        <h4>{{ user?.name || 'User' }}</h4>
+        <p>{{ user?.role || 'member' }}</p>
       </div>
     </div>
+
+    <button class="logout-btn" type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
   </div>
 </header>

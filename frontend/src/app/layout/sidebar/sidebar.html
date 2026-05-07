@@ -1,13 +1,16 @@
 <!--
-  sidebar.component.html
+  sidebar.html
 
   WHY:
-  Professional sidebar navigation for project modules.
+  Professional sidebar navigation using Material icons.
 -->
 
 <aside class="sidebar">
   <div class="brand">
-    <div class="brand-logo">IT</div>
+    <div class="brand-logo">
+      <mat-icon>track_changes</mat-icon>
+    </div>
+
     <div>
       <h2>Issue Tracker</h2>
       <p>MEAN Dashboard</p>
@@ -22,7 +25,7 @@
         [routerLinkActiveOptions]="{ exact: item.route === '/' }"
         class="nav-item"
       >
-        <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+        <mat-icon>{{ item.icon }}</mat-icon>
         <span>{{ item.label }}</span>
       </a>
     }
@@ -31,7 +34,10 @@
   <div class="sidebar-card">
     <p class="small-text">Backend Status</p>
     <h3>API Ready</h3>
-    <span class="status-dot"></span>
-    <span class="status-text">Connected Soon</span>
+
+    <div class="status-line">
+      <mat-icon>check_circle</mat-icon>
+      <span>Connected</span>
+    </div>
   </div>
 </aside>

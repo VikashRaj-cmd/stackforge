@@ -3,15 +3,19 @@
  *
  * WHY:
  * Defines frontend page navigation.
- * Auth pages are separate from dashboard layout.
+ * Login and register are public.
+ * Dashboard and main app pages are protected by authGuard.
  */
 
 import { Routes } from '@angular/router';
 
 import { MainLayout } from './layout/main-layout/main-layout';
 import { Dashboard } from './features/dashboard/dashboard/dashboard';
+
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
+
+import { authGuard } from './core/guards/authGuard';
 
 export const routes: Routes = [
   {
@@ -27,6 +31,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',

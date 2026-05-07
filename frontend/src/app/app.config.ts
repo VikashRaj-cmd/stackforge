@@ -2,22 +2,33 @@
  * app.config.ts
  *
  * WHY:
- * Global Angular configuration.
- * HttpClient is required for backend API calls.
- * Animations are required for Angular Material components.
+ * This file contains global Angular app configuration.
+ * It enables routing and HttpClient.
+ * It also registers JWT interceptor globally.
  */
 
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/authInterceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withFetch()),
-    provideAnimations(),
+
+    /**
+     * HttpClient is required for backend API calls.
+     * withInterceptors registers JWT interceptor.
+     */
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor])
+    ),
   ],
 };

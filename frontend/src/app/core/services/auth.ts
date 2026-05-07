@@ -2,29 +2,24 @@
  * auth.service.ts
  *
  * WHY:
- * Handles authentication API calls:
- * - register
- * - login
- * - logout
- * - save JWT token
- * - read current auth state
+ * Handles authentication API calls and JWT token storage.
+ * Other parts of app use this service to check login status.
  */
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 import { API_BASE_URL } from './api.config';
 import { User } from '../models/user.model';
 
-interface RegisterPayload {
-  name: string;
+interface LoginBody {
   email: string;
   password: string;
 }
 
-interface LoginPayload {
+interface RegisterBody {
+  name: string;
   email: string;
   password: string;
 }
@@ -43,40 +38,69 @@ export class AuthService {
   private readonly tokenKey = 'issue_tracker_token';
   private readonly userKey = 'issue_tracker_user';
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient) {}
 
   /**
-   * Register user using backend API.
+   * Check if running in browser (SSR safe)
    */
-  register(payload: RegisterPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/register`, payload);
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined';
   }
 
   /**
-   * Login user and save token/user in localStorage.
+   * Register a new user using backend register API.
    */
-  login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, payload).pipe(
-      tap((response) => {
-        if (response.token) {
-          localStorage.setItem(this.tokenKey, response.token);
+  register(data: RegisterBody): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/register`, data);
+  }
+
+  /**
+   * Login user and save JWT token + user data.
+   */
+  login(data: LoginBody): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, data).pipe(
+      tap((res) => {
+        if (!this.isBrowser()) return;
+
+        if (res.token) {
+          localStorage.setItem(this.tokenKey, res.token);
         }
 
-        if (response.data) {
-          localStorage.setItem(this.userKey, JSON.stringify(response.data));
+        if (res.data) {
+          localStorage.setItem(this.userKey, JSON.stringify(res.data));
         }
       })
     );
   }
 
   /**
-   * Get JWT token from localStorage.
+   * Get current user profile from backend.
+   */
+  getMe(): Observable<AuthResponse> {
+    return this.http.get<AuthResponse>(`${API_BASE_URL}/auth/me`);
+  }
+
+  /**
+   * Get saved JWT token.
    */
   getToken(): string | null {
+    if (!this.isBrowser()) return null;
     return localStorage.getItem(this.tokenKey);
+  }
+
+  /**
+   * Get saved user from localStorage.
+   */
+  getCurrentUser(): User | null {
+    if (!this.isBrowser()) return null;
+
+    const user = localStorage.getItem(this.userKey);
+
+    if (!user) {
+      return null;
+    }
+
+    return JSON.parse(user) as User;
   }
 
   /**
@@ -87,19 +111,12 @@ export class AuthService {
   }
 
   /**
-   * Get stored user data.
-   */
-  getStoredUser(): User | null {
-    const user = localStorage.getItem(this.userKey);
-    return user ? JSON.parse(user) : null;
-  }
-
-  /**
-   * Logout user from frontend.
+   * Logout user locally.
    */
   logout(): void {
+    if (!this.isBrowser()) return;
+
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
-    this.router.navigate(['/login']);
   }
 }

@@ -1,8 +1,8 @@
 /**
- * sidebar.component.css
+ * sidebar.css
  *
  * WHY:
- * Gives the app a clean SaaS-style sidebar.
+ * Gives the app a clean SaaS-style sidebar with Material icons.
  */
 
 .sidebar {
@@ -33,8 +33,11 @@
   background: linear-gradient(135deg, #6366f1, #22c55e);
   display: grid;
   place-items: center;
-  font-weight: 800;
   box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+}
+
+.brand-logo mat-icon {
+  color: #ffffff;
 }
 
 .brand h2 {
@@ -71,15 +74,8 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.nav-icon {
-  width: 24px;
-}
-
-/* ✅ Added for Material icon alignment (no design change) */
-.nav-icon mat-icon,
-mat-icon.nav-icon {
-  font-size: 20px;
-  vertical-align: middle;
+.nav-item mat-icon {
+  color: inherit;
 }
 
 .sidebar-card {
@@ -99,18 +95,19 @@ mat-icon.nav-icon {
   margin: 6px 0 10px;
 }
 
-.status-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  display: inline-block;
-  background: #22c55e;
-  margin-right: 8px;
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d1fae5;
+  font-size: 13px;
 }
 
-.status-text {
-  font-size: 13px;
-  color: #d1fae5;
+.status-line mat-icon {
+  color: #22c55e;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 @media (max-width: 900px) {
