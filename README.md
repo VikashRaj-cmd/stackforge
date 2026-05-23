@@ -1,4 +1,4 @@
-# Issue Tracker — MEAN Stack
+# StackForge — Full-Stack Issue Tracking Platform
 
 A full-stack **Issue & Bug Tracking System** built with the **MEAN stack** — inspired by systems like GitHub Issues, Jira, and Linear.
 
@@ -19,7 +19,7 @@ A full-stack **Issue & Bug Tracking System** built with the **MEAN stack** — i
 ## Project Structure
 
 ```txt
-issue-tracker/
+stackforge/
 ├── backend/                  # Node.js + Express REST API
 │   ├── config/               # App config, DB connection, logger
 │   ├── controllers/          # Route handler logic

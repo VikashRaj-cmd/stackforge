@@ -1,6 +1,6 @@
-# Issue Tracker — Frontend
+# StackForge — Frontend
 
-Angular 21 frontend for the **Issue & Bug Tracking System** with Server-Side Rendering (SSR).
+Angular 21 frontend for the **StackForge — Full-Stack Issue Tracking Platform** with Server-Side Rendering (SSR).
 
 ---
 

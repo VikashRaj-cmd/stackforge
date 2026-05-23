@@ -1,6 +1,6 @@
-# Issue Tracker Backend
+# StackForge — Backend
 
-A production-style **Issue & Bug Tracking System** backend built with **Node.js, Express.js, MongoDB, and Mongoose** — inspired by systems like GitHub Issues, Jira, and Linear.
+A production-style **Full-Stack Issue Tracking Platform** backend built with **Node.js, Express.js, MongoDB, and Mongoose** — inspired by systems like GitHub Issues, Jira, and Linear.
 
 ---
 
@@ -45,7 +45,7 @@ A production-style **Issue & Bug Tracking System** backend built with **Node.js,
 ## Project Structure
 
 ```txt
-issue-tracker/
+stackforge/
 ├── config/
 │   ├── config.js
 │   ├── database.js
@@ -118,8 +118,8 @@ issue-tracker/
 ### Installation
 
 ```bash
-git clone https://github.com/VikashRaj-cmd/issue-tracker.git
-cd issue-tracker
+git clone https://github.com/VikashRaj-cmd/stackforge.git
+cd stackforge
 npm install
 ```
 
@@ -273,13 +273,13 @@ Structured JSON logging via Winston:
 
 ### Import Files
 
-1. **Environment**: `postman/Issue Tracker Local.postman_environment.json`
-2. **Collection**: `postman/Issue Tracker API.postman_collection.json`
+1. **Environment**: `postman/StackForge Local.postman_environment.json`
+2. **Collection**: `postman/StackForge API.postman_collection.json`
 
 ### Setup Steps
 
 1. Import both files into Postman
-2. Select **Issue Tracker Local** environment
+2. Select **StackForge Local** environment
 3. Run **Auth → Login User** first (auto-saves token)
 4. Follow sequence: Auth → Projects → Users → Issues → Comments → Labels → Validation Tests
 
@@ -322,7 +322,7 @@ Content-Type: application/json
 
 ## Previous Postman Info (Legacy)
 
-Import the collection from `postman/Issue-Tracker-API.postman_collection.json` into Postman.
+Import the collection from `postman/StackForge-API.postman_collection.json` into Postman.
 
 - **Auth** — Register and login to get a JWT token
 - **Protected** — Use the JWT token in the `Authorization` header to access protected routes

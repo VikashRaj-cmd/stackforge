@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "stackforge": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "frontend:build:production"
+              "buildTarget": "stackforge:build:production"
             },
             "development": {
-              "buildTarget": "frontend:build:development"
+              "buildTarget": "stackforge:build:development"
             }
           },
           "defaultConfiguration": "development"

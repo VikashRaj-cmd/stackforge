@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "issue-tracker-api-v1",
-		"name": "Issue Tracker API",
-		"description": "Complete API collection for Issue Tracker backend with authentication, projects, issues, comments, labels, and validation tests.",
+		"_postman_id": "stackforge-api-v1",
+		"name": "StackForge API",
+		"description": "Complete API collection for StackForge backend with authentication, projects, issues, comments, labels, and validation tests.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"version": "1.0.0"
 	},
@@ -269,7 +269,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Issue Tracker Project\",\n  \"description\": \"This is my backend issue tracker project\"\n}"
+							"raw": "{\n  \"title\": \"StackForge Project\",\n  \"description\": \"This is my StackForge project\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/projects",
@@ -344,7 +344,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Updated Issue Tracker Project\",\n  \"description\": \"Updated description\",\n  \"status\": \"active\"\n}"
+							"raw": "{\n  \"title\": \"Updated StackForge Project\",\n  \"description\": \"Updated description\",\n  \"status\": \"active\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/projects/{{projectId}}",
