@@ -1,0 +1,64 @@
+<!--
+  project-details.html
+
+  WHY:
+  Shows project information and member management.
+-->
+
+@if (project) {
+  <section class="details-page">
+    <div class="hero">
+      <div class="hero-icon">
+        <mat-icon>folder</mat-icon>
+      </div>
+
+      <div>
+        <h2>{{ project.title }}</h2>
+
+        <p>{{ project.description }}</p>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <section class="panel">
+        <div class="panel-header">
+          <h3>Project Members</h3>
+        </div>
+
+        <div class="member-form">
+          <input
+            type="text"
+            [(ngModel)]="userId"
+            placeholder="Enter user ID"
+          />
+
+          <button (click)="addMember()">
+            <mat-icon>person_add</mat-icon>
+            Add Member
+          </button>
+        </div>
+
+        <div class="member-list">
+          @for (member of project.members; track member.user?._id || member._id) {
+            <div class="member-card">
+              <div class="member-info">
+                <div class="avatar">
+                  <mat-icon>person</mat-icon>
+                </div>
+
+                <div>
+                  <h4>{{ member.user?.name }}</h4>
+                  <p>{{ member.user?.email }}</p>
+                </div>
+              </div>
+
+              <button (click)="removeMember(member.user?._id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+  </section>
+}

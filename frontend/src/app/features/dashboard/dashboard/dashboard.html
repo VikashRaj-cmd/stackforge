@@ -1,14 +1,8 @@
-<!--
-  dashboard.component.html
-
-  WHY:
-  First professional landing page after login.
-  Later data will come from backend APIs.
--->
-
 <section class="dashboard">
+
   <div class="hero-card">
     <div>
+
       <p class="eyebrow">Full Stack MEAN Project</p>
 
       <h2>
@@ -16,30 +10,28 @@
       </h2>
 
       <p class="hero-text">
-        Your backend APIs are ready. This Angular frontend will connect module
-        by module: Auth, Projects, Issues, Comments, Labels, and Users.
+        Your backend APIs are connected with Angular frontend modules.
       </p>
 
       <div class="hero-actions">
+
         <button class="primary-btn">
           Create Issue
         </button>
 
-        <!--
-          CHANGED:
-          Added Angular routerLink navigation.
-          This removes RouterLink warning.
-        -->
         <button
           class="secondary-btn"
-          [routerLink]="'/projects'"
+          [routerLink]="['/projects']"
         >
           View Projects
         </button>
+
       </div>
+
     </div>
 
     <div class="hero-visual">
+
       <div class="circle one"></div>
       <div class="circle two"></div>
 
@@ -48,21 +40,18 @@
 
         <div>
           <strong>Critical Bugs</strong>
-          <p>8 need attention</p>
+          <p>Need attention</p>
         </div>
       </div>
+
     </div>
   </div>
 
   <div class="stats-grid">
 
-    <!--
-      CHANGED:
-      Replaced invalid @for syntax with Angular *ngFor
-    -->
     <article
       class="stat-card"
-      *ngFor="let stat of stats; trackBy: trackByTitle"
+      *ngFor="let stat of stats; trackBy: trackByStat"
     >
       <div class="stat-icon">
         <mat-icon>{{ stat.icon }}</mat-icon>
@@ -70,57 +59,52 @@
 
       <div>
         <p>{{ stat.title }}</p>
-
         <h3>{{ stat.value }}</h3>
-
-        <!--
-          CHANGED:
-          trend property now exists in StatCard interface
-        -->
-        <span>{{ stat.trend }}</span>
+        <span>{{ stat.helper }}</span>
       </div>
     </article>
+
   </div>
 
   <div class="content-grid">
+
     <section class="panel">
 
       <div class="panel-header">
         <h3>Recent Issues</h3>
 
-        <!--
-          CHANGED:
-          Added routerLink navigation
-        -->
-        <button [routerLink]="'/issues'">
+        <button [routerLink]="['/issues']">
           View All
         </button>
       </div>
 
       <div class="issue-list">
 
-        <!--
-          CHANGED:
-          Replaced invalid @for syntax with Angular *ngFor
-        -->
         <div
           class="issue-row"
-          *ngFor="let issue of recentIssues; trackBy: trackByTitle"
+          *ngFor="let issue of recentIssues; trackBy: trackByIssue"
         >
           <div>
+
             <h4>{{ issue.title }}</h4>
 
+            <!--
+              WHY:
+              project can be either:
+              string | Project
+
+              Showing string value avoids:
+              TS2339 Property 'title' does not exist
+            -->
             <p>{{ issue.project }}</p>
+
           </div>
 
           <div class="badges">
 
-            <!--
-              Existing priority class binding kept
-            -->
             <span
               class="priority"
-              [class]="issue.priority"
+              [ngClass]="issue.priority"
             >
               {{ issue.priority }}
             </span>
@@ -128,12 +112,20 @@
             <span class="status">
               {{ issue.status }}
             </span>
+
           </div>
         </div>
+
+        <div *ngIf="recentIssues.length === 0">
+          No issues found.
+        </div>
+
       </div>
+
     </section>
 
     <section class="panel">
+
       <div class="panel-header">
         <h3>Workflow Health</h3>
       </div>
@@ -142,29 +134,29 @@
 
         <div class="progress-item">
           <span>Open</span>
-
           <div class="bar">
-            <div style="width: 72%"></div>
+            <div style="width:72%"></div>
           </div>
         </div>
 
         <div class="progress-item">
           <span>In Progress</span>
-
           <div class="bar">
-            <div style="width: 55%"></div>
+            <div style="width:55%"></div>
           </div>
         </div>
 
         <div class="progress-item">
           <span>Resolved</span>
-
           <div class="bar">
-            <div style="width: 84%"></div>
+            <div style="width:84%"></div>
           </div>
         </div>
 
       </div>
+
     </section>
+
   </div>
+
 </section>

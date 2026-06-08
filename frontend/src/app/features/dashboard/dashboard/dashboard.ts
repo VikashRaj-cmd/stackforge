@@ -3,19 +3,19 @@
  *
  * WHY:
  * Dashboard connects frontend UI with backend APIs.
- * It loads projects, issues, users and shows real summary cards.
+ * It loads projects and issues to show real summary cards.
+ * Users endpoint is admin-only so it is not called here.
  */
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; // <-- CHANGED: Use RouterModule, not RouterLink
+import { RouterModule } from '@angular/router';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { ProjectService } from '../../../core/services/project';
 import { IssueService } from '../../../core/services/issue';
-import { UserService } from '../../../core/services/user';
 import { Issue } from '../../../core/models/issue.model';
 
 interface StatCard {
@@ -23,14 +23,14 @@ interface StatCard {
   value: string;
   icon: string;
   helper: string;
-  trend?: string; // <-- CHANGED: Added optional trend property
 }
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, MatIconModule, MatProgressSpinnerModule], // <-- CHANGED: Replaced RouterLink with RouterModule
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css'], // <-- FIXED: was styleUrl -> should be styleUrls
+  styleUrls: ['./dashboard.css'],
 })
 export class Dashboard implements OnInit {
   loading = true;
@@ -40,150 +40,91 @@ export class Dashboard implements OnInit {
   totalIssues = 0;
   openIssues = 0;
   resolvedIssues = 0;
-  teamMembers = 0;
 
   recentIssues: Issue[] = [];
 
+  /**
+   * Track pending API requests to control loading state.
+   */
+  private pending = 2;
+
   constructor(
     private projectService: ProjectService,
-    private issueService: IssueService,
-    private userService: UserService
+    private issueService: IssueService
   ) {}
 
-  /**
-   * Load dashboard data when page opens.
-   */
   ngOnInit(): void {
-    this.loadDashboard();
-  }
-
-  /**
-   * Load all dashboard APIs.
-   */
-  loadDashboard(): void {
-    this.loading = true;
-    this.errorMessage = '';
-
     this.loadProjects();
     this.loadIssues();
-    this.loadUsers();
   }
 
   /**
-   * Load project count from backend.
+   * Load all projects for count.
    */
   private loadProjects(): void {
     this.projectService.getProjects().subscribe({
       next: (res) => {
         this.totalProjects = res.data?.length || 0;
-        this.stopLoading();
+        this.tick();
       },
       error: () => {
         this.errorMessage = 'Unable to load projects.';
-        this.stopLoading();
+        this.tick();
       },
     });
   }
 
   /**
-   * Load issues and calculate issue statistics.
+   * Load issues for counts and recent list.
    */
   private loadIssues(): void {
     this.issueService.getIssues('?page=1&limit=100&sort=-createdAt').subscribe({
       next: (res) => {
         const issues = res.data || [];
-
         this.totalIssues = res.meta?.total || issues.length;
-        this.openIssues = issues.filter((issue) => issue.status === 'open').length;
-        this.resolvedIssues = issues.filter((issue) => issue.status === 'resolved').length;
+        this.openIssues = issues.filter((i) => i.status === 'open').length;
+        this.resolvedIssues = issues.filter((i) => i.status === 'resolved').length;
         this.recentIssues = issues.slice(0, 5);
-
-        this.stopLoading();
+        this.tick();
       },
       error: () => {
         this.errorMessage = 'Unable to load issues.';
-        this.stopLoading();
+        this.tick();
       },
     });
   }
 
   /**
-   * Load user count.
-   * If logged-in user is not admin, backend may return 403.
-   * In that case, we show 0 instead of breaking dashboard.
+   * Decrement pending counter; set loading false when all done.
    */
-  private loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (res) => {
-        this.teamMembers = res.data?.length || 0;
-        this.stopLoading();
-      },
-      error: () => {
-        this.teamMembers = 0;
-        this.stopLoading();
-      },
-    });
+  private tick(): void {
+    this.pending--;
+    if (this.pending <= 0) this.loading = false;
   }
 
   /**
-   * Stop loading after API response.
-   */
-  private stopLoading(): void {
-    this.loading = false;
-  }
-
-  /**
-   * Build dashboard stat cards dynamically.
+   * Dashboard statistic cards.
    */
   get stats(): StatCard[] {
     return [
-      {
-        title: 'Total Projects',
-        value: String(this.totalProjects),
-        icon: 'folder',
-        helper: 'Active project workspaces',
-        trend: '+3 this week', // <-- CHANGED: Added trend sample
-      },
-      {
-        title: 'Total Issues',
-        value: String(this.totalIssues),
-        icon: 'bug_report',
-        helper: 'All tracked issues',
-        trend: '-1 since yesterday',
-      },
-      {
-        title: 'Open Issues',
-        value: String(this.openIssues),
-        icon: 'pending_actions',
-        helper: 'Need attention',
-        trend: '+2 new',
-      },
-      {
-        title: 'Resolved Issues',
-        value: String(this.resolvedIssues),
-        icon: 'task_alt',
-        helper: 'Completed issues',
-        trend: '+5 completed',
-      },
-      {
-        title: 'Team Members',
-        value: String(this.teamMembers),
-        icon: 'groups',
-        helper: 'Visible for admin users',
-        trend: '', // optional, no trend
-      },
+      { title: 'Total Projects', value: String(this.totalProjects), icon: 'folder', helper: 'Active project workspaces' },
+      { title: 'Total Issues', value: String(this.totalIssues), icon: 'bug_report', helper: 'All tracked issues' },
+      { title: 'Open Issues', value: String(this.openIssues), icon: 'pending_actions', helper: 'Need attention' },
+      { title: 'Resolved Issues', value: String(this.resolvedIssues), icon: 'task_alt', helper: 'Completed issues' },
     ];
   }
 
   /**
-   * Return CSS class based on issue priority.
+   * Track stat cards by title.
    */
-  getPriorityClass(priority: string): string {
-    return `priority ${priority}`;
+  trackByStat(_: number, stat: StatCard): string {
+    return stat.title;
   }
 
-  // <-- CHANGED: Added trackBy function for *ngFor
-  trackByTitle(index: number, item: { title: string }) {
-    return item.title;
+  /**
+   * Track issue rows by ID.
+   */
+  trackByIssue(_: number, issue: Issue): string {
+    return issue._id;
   }
 }

@@ -1,0 +1,56 @@
+<!--
+  project-form.html
+
+  WHY:
+  Project create/update form UI.
+-->
+
+<section class="form-page">
+  <div class="form-card">
+    <div class="header">
+      <div class="icon">
+        <mat-icon>
+          {{ isEditMode ? 'edit' : 'add_circle' }}
+        </mat-icon>
+      </div>
+
+      <div>
+        <h2>
+          {{ isEditMode ? 'Update Project' : 'Create Project' }}
+        </h2>
+
+        <p>Manage your project workspace professionally.</p>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Project Name</label>
+
+        <input
+          type="text"
+          placeholder="Enter project name"
+          formControlName="name"
+        />
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+
+        <textarea
+          rows="6"
+          placeholder="Enter project description"
+          formControlName="description"
+        ></textarea>
+      </div>
+
+      <button type="submit">
+        <mat-icon>
+          {{ isEditMode ? 'save' : 'add' }}
+        </mat-icon>
+
+        {{ isEditMode ? 'Update Project' : 'Create Project' }}
+      </button>
+    </form>
+  </div>
+</section>

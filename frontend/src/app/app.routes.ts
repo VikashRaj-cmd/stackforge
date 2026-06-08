@@ -61,21 +61,21 @@ export const routes: Routes = [
       /**
        * Issue Routes
        */
-      {
-        path: 'issues',
-        loadComponent: () => import('./features/issues/issue-list/issue-list').then((m) => m.IssueList),
-        title: 'Issues | StackForge',
-      },
-      {
-        path: 'issues/create',
-        loadComponent: () => import('./features/issues/issue-form/issue-form').then((m) => m.IssueForm),
-        title: 'Create Issue | StackForge',
-      },
-      {
-        path: 'issues/:id',
-        loadComponent: () => import('./features/issues/issue-detail/issue-detail').then((m) => m.IssueDetail),
-        title: 'Issue Detail | StackForge',
-      },
+      // {
+      //   path: 'issues',
+      //   loadComponent: () => import('./features/issues/issue-list/issue-list').then((m) => m.IssueList),
+      //   title: 'Issues | StackForge',
+      // },
+      // {
+      //   path: 'issues/create',
+      //   loadComponent: () => import('./features/issues/issue-form/issue-form').then((m) => m.IssueForm),
+      //   title: 'Create Issue | StackForge',
+      // },
+      // {
+      //   path: 'issues/:id',
+      //   loadComponent: () => import('./features/issues/issue-detail/issue-detail').then((m) => m.IssueDetail),
+      //   title: 'Issue Detail | StackForge',
+      // },
     ],
   },
   {

@@ -6,7 +6,7 @@
  * Shows user information and logout action.
  */
 
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ import { User } from '../../core/models/user.model';
 })
 export class Navbar {
   user: User | null;
+  dropdownOpen = false;
 
   constructor(
     private auth: AuthService,
@@ -30,10 +31,40 @@ export class Navbar {
     this.user = this.auth.getCurrentUser();
   }
 
-  /**
-   * Logout current user and redirect to login page.
-   */
+  get initials(): string {
+    if (!this.user?.name) return 'U';
+    return this.user.name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.profile-menu')) {
+      this.dropdownOpen = false;
+    }
+  }
+
+  goToProfile(): void {
+    this.dropdownOpen = false;
+    this.router.navigate(['/profile']);
+  }
+
+  goToSettings(): void {
+    this.dropdownOpen = false;
+    this.router.navigate(['/settings']);
+  }
+
   logout(): void {
+    this.dropdownOpen = false;
     this.auth.logout();
     this.router.navigate(['/login']);
   }
