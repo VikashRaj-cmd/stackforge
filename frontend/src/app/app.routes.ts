@@ -2,31 +2,26 @@
  * app.routes.ts
  *
  * WHY:
- * Defines frontend page navigation.
- * Login and register are public.
- * Dashboard and main app pages are protected by authGuard.
+ * Defines all frontend application routes.
+ * Protected routes use authGuard.
+ * All feature components use loadComponent (lazy) so their
+ * ngOnInit and API calls only fire when the route is visited.
  */
 
 import { Routes } from '@angular/router';
-
 import { MainLayout } from './layout/main-layout/main-layout';
-import { Dashboard } from './features/dashboard/dashboard/dashboard';
-
-import { Login } from './features/auth/login/login';
-import { Register } from './features/auth/register/register';
-
 import { authGuard } from './core/guards/authGuard';
 
 export const routes: Routes = [
   {
     path: 'login',
-    component: Login,
-    title: 'Login | Issue Tracker',
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+    title: 'Login | StackForge',
   },
   {
     path: 'register',
-    component: Register,
-    title: 'Register | Issue Tracker',
+    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+    title: 'Register | StackForge',
   },
   {
     path: '',
@@ -35,8 +30,51 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: Dashboard,
-        title: 'Dashboard | Issue Tracker',
+        loadComponent: () => import('./features/dashboard/dashboard/dashboard').then((m) => m.Dashboard),
+        title: 'Dashboard | StackForge',
+      },
+
+      /**
+       * Project Routes
+       */
+      {
+        path: 'projects',
+        loadComponent: () => import('./features/projects/project-list/project-list').then((m) => m.ProjectList),
+        title: 'Projects | StackForge',
+      },
+      {
+        path: 'projects/create',
+        loadComponent: () => import('./features/projects/project-form/project-form').then((m) => m.ProjectForm),
+        title: 'Create Project | StackForge',
+      },
+      {
+        path: 'projects/edit/:id',
+        loadComponent: () => import('./features/projects/project-form/project-form').then((m) => m.ProjectForm),
+        title: 'Edit Project | StackForge',
+      },
+      {
+        path: 'projects/:id',
+        loadComponent: () => import('./features/projects/project-details/project-details').then((m) => m.ProjectDetails),
+        title: 'Project Details | StackForge',
+      },
+
+      /**
+       * Issue Routes
+       */
+      {
+        path: 'issues',
+        loadComponent: () => import('./features/issues/issue-list/issue-list').then((m) => m.IssueList),
+        title: 'Issues | StackForge',
+      },
+      {
+        path: 'issues/create',
+        loadComponent: () => import('./features/issues/issue-form/issue-form').then((m) => m.IssueForm),
+        title: 'Create Issue | StackForge',
+      },
+      {
+        path: 'issues/:id',
+        loadComponent: () => import('./features/issues/issue-detail/issue-detail').then((m) => m.IssueDetail),
+        title: 'Issue Detail | StackForge',
       },
     ],
   },
