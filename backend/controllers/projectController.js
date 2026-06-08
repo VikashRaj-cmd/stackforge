@@ -7,7 +7,9 @@
  * Includes ownership checks where required.
  */
 
+import mongoose from "mongoose";
 import Project from "../models/Project.js";
+import User from "../models/User.js";
 import AppError from "../utils/AppError.js";
 import catchAsync from "../utils/catchAsync.js";
 
@@ -124,15 +126,34 @@ export const addMember = catchAsync(async (req, res, next) => {
     return next(new AppError("Only project owner can add members", 403));
   }
 
+  // Resolve user if email is passed instead of ID
+  let targetUserId = userId;
+  if (userId && userId.includes("@")) {
+    const user = await User.findOne({ email: userId });
+    if (!user) {
+      return next(new AppError("User with this email not found", 404));
+    }
+    targetUserId = user._id;
+  } else {
+    // Validate if it is a valid ObjectId format to prevent 500 cast error
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return next(new AppError("Invalid User ID format", 400));
+    }
+    const userExists = await User.findById(userId);
+    if (!userExists) {
+      return next(new AppError("User not found", 404));
+    }
+  }
+
   const alreadyMember = project.members.some(
-    (member) => member.user.toString() === userId
+    (member) => member.user.toString() === targetUserId.toString()
   );
 
   if (alreadyMember) {
     return next(new AppError("User is already a project member", 409));
   }
 
-  project.members.push({ user: userId, role });
+  project.members.push({ user: targetUserId, role });
   await project.save();
 
   res.status(200).json({
