@@ -98,7 +98,7 @@ export class IssueForm implements OnInit {
     this.issueService.getIssue(this.issueId).subscribe({
       next: (res) => {
         const issue = res.data;
-        const projectId = issue.project?._id || issue.project;
+        const projectId = issue.project ? (typeof issue.project === 'string' ? issue.project : issue.project._id) : '';
         
         this.loadProjectMembers(projectId, () => {
           this.form.patchValue({
@@ -107,7 +107,7 @@ export class IssueForm implements OnInit {
             type: issue.type,
             priority: issue.priority,
             project: projectId,
-            assignee: issue.assignee?._id || issue.assignee || '',
+            assignee: !issue.assignee ? '' : (typeof issue.assignee === 'string' ? issue.assignee : issue.assignee._id),
             dueDate: issue.dueDate ? new Date(issue.dueDate).toISOString().substring(0, 10) : '',
           });
           this.loading = false;

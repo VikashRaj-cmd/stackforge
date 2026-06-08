@@ -45,7 +45,7 @@ export class IssueBoard implements OnInit {
 
   loadIssues(): void {
     this.loading = true;
-    this.issueService.getIssues({ limit: 100 }).subscribe({
+    this.issueService.getIssues('?limit=100').subscribe({
       next: (res) => {
         this.issues = res.data || [];
         this.loading = false;

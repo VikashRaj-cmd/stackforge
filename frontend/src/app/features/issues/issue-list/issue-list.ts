@@ -48,13 +48,15 @@ export class IssueList implements OnInit {
   loadIssues(): void {
     this.loading = true;
     
-    const params: any = {};
-    if (this.search.trim()) params.search = this.search.trim();
-    if (this.status) params.status = this.status;
-    if (this.priority) params.priority = this.priority;
-    if (this.type) params.type = this.type;
+    const queryParts: string[] = [];
+    if (this.search.trim()) queryParts.push(`search=${encodeURIComponent(this.search.trim())}`);
+    if (this.status) queryParts.push(`status=${this.status}`);
+    if (this.priority) queryParts.push(`priority=${this.priority}`);
+    if (this.type) queryParts.push(`type=${this.type}`);
     
-    this.issueService.getIssues(params).subscribe({
+    const query = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+    
+    this.issueService.getIssues(query).subscribe({
       next: (res) => {
         this.issues = res.data || [];
         this.loading = false;
