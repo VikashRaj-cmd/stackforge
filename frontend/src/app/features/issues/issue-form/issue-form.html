@@ -108,6 +108,28 @@
           />
         </div>
 
+        <div class="field">
+          <label>Labels</label>
+          <div class="labels-selection-grid">
+            @for (label of projectLabels; track label._id) {
+              <div 
+                class="label-selection-pill" 
+                [style.background-color]="isLabelSelected(label._id) ? label.color : '#f1f5f9'"
+                [style.color]="isLabelSelected(label._id) ? getContrastColor(label.color) : '#475569'"
+                [style.border-color]="isLabelSelected(label._id) ? label.color : '#cbd5e1'"
+                (click)="toggleLabelSelection(label._id)"
+              >
+                <mat-icon class="icon-sm">
+                  {{ isLabelSelected(label._id) ? 'check' : 'label' }}
+                </mat-icon>
+                <span>{{ label.name }}</span>
+              </div>
+            } @empty {
+              <p class="no-labels-msg">No labels available for this project workspace. Create labels first to select them.</p>
+            }
+          </div>
+        </div>
+
         <div class="form-actions">
           <a routerLink="/issues" class="cancel-btn">Cancel</a>
           <button type="submit" [disabled]="loading">

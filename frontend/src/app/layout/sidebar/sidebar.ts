@@ -45,5 +45,10 @@ export class Sidebar {
       icon: 'view_kanban',
       route: '/issues/board',
     },
+    {
+      label: 'Labels',
+      icon: 'label',
+      route: '/labels',
+    },
   ];
 }

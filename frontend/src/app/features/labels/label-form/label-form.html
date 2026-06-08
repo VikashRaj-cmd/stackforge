@@ -1,1 +1,133 @@
-<p>label-form works!</p>
+<!--
+  label-form.html
+
+  WHY:
+  Provides inputs to create or modify tags with visual previews and default color preset tools.
+-->
+
+<section class="form-page">
+  <div class="form-card">
+    <div class="header">
+      <div class="icon">
+        <mat-icon>
+          {{ isEditMode ? 'edit' : 'add_circle' }}
+        </mat-icon>
+      </div>
+
+      <div>
+        <h2>
+          {{ isEditMode ? 'Update Label' : 'Create Label' }}
+        </h2>
+        <p>Label and categorize issues inside project workspaces.</p>
+      </div>
+    </div>
+
+    @if (loading && isEditMode) {
+      <div class="loading-container">
+        <mat-icon class="spin">hourglass_top</mat-icon>
+        <p>Loading label details...</p>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label>Project Workspace <span class="required">*</span></label>
+          <select formControlName="project">
+            <option value="" disabled selected>Select a project</option>
+            @for (proj of projects; track proj._id) {
+              <option [value]="proj._id">{{ proj.title }}</option>
+            }
+          </select>
+          @if (form.get('project')?.touched && form.get('project')?.errors?.['required']) {
+            <span class="error-msg">Project is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Label Name <span class="required">*</span></label>
+          <input
+            type="text"
+            placeholder="e.g. Bug, UI, Backend"
+            formControlName="name"
+          />
+          @if (form.get('name')?.touched && form.get('name')?.errors?.['required']) {
+            <span class="error-msg">Label name is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <input
+            type="text"
+            placeholder="Short description of the label purpose"
+            formControlName="description"
+          />
+        </div>
+
+        <!-- Color Picker & Preset Colors -->
+        <div class="color-picker-section">
+          <div class="field color-field">
+            <label>Label Color <span class="required">*</span></label>
+            <div class="picker-row">
+              <input
+                type="color"
+                formControlName="color"
+                class="html5-color-picker"
+              />
+              <input
+                type="text"
+                formControlName="color"
+                placeholder="#ffffff"
+                maxlength="7"
+                class="hex-input"
+              />
+            </div>
+            @if (form.get('color')?.touched && form.get('color')?.errors?.['pattern']) {
+              <span class="error-msg">Color must be in #HEX format (e.g. #EF4444).</span>
+            }
+          </div>
+
+          <div class="recommended-colors">
+            <label>Recommended Default Colors</label>
+            <div class="color-presets">
+              @for (preset of defaultColors; track preset.name) {
+                <button
+                  type="button"
+                  class="preset-btn"
+                  [style.background-color]="preset.color"
+                  [title]="preset.name"
+                  (click)="selectColor(preset.color)"
+                >
+                  <span class="preset-tooltip">{{ preset.name }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="preview-box">
+          <label>Label Preview</label>
+          <div class="preview-display">
+            <span 
+              class="label-badge-preview" 
+              [style.background-color]="form.get('color')?.value"
+              [style.color]="form.get('color')?.value ? getContrastColor(form.get('color')?.value) : '#ffffff'"
+            >
+              {{ form.get('name')?.value || 'Preview' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a routerLink="/labels" class="cancel-btn">Cancel</a>
+          <button type="submit" [disabled]="loading">
+            <mat-icon>
+              {{ isEditMode ? 'save' : 'add' }}
+            </mat-icon>
+            {{ isEditMode ? 'Save Label' : 'Create Label' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</section>

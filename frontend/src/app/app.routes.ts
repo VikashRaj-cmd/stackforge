@@ -11,7 +11,6 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { authGuard } from './core/guards/authGuard';
-
 import { IssueList } from './features/issues/issue-list/issue-list';
 import { IssueForm } from './features/issues/issue-form/issue-form';
 import { IssueDetails } from './features/issues/issue-details/issue-details';
@@ -64,8 +63,8 @@ export const routes: Routes = [
       },
 
       /**
-       * Issue Routes
-       */
+        * Issue Routes
+        */
       {
         path: 'issues',
         component: IssueList,
@@ -84,12 +83,27 @@ export const routes: Routes = [
       {
         path: 'issues/board',
         component: IssueBoard,
-        title: 'Kanban Board | Issue Tracker',
+        title: 'Issue Board | Issue Tracker',
       },
       {
         path: 'issues/:id',
         component: IssueDetails,
         title: 'Issue Details | Issue Tracker',
+      },
+      {
+        path: 'labels',
+        loadComponent: () => import('./features/labels/label-list/label-list').then((m) => m.LabelList),
+        title: 'Labels | StackForge',
+      },
+      {
+        path: 'labels/create',
+        loadComponent: () => import('./features/labels/label-form/label-form').then((m) => m.LabelForm),
+        title: 'Create Label | StackForge',
+      },
+      {
+        path: 'labels/edit/:id',
+        loadComponent: () => import('./features/labels/label-form/label-form').then((m) => m.LabelForm),
+        title: 'Edit Label | StackForge',
       },
     ],
   },

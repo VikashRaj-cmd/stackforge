@@ -3,6 +3,7 @@
  *
  * WHY:
  * Handles issue creation and updating, dynamic project member retrieval.
+ * Supports project-scoped label assignment.
  */
 
 import { Component, OnInit } from '@angular/core';
@@ -12,6 +13,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { IssueService } from '../../../core/services/issue';
 import { ProjectService } from '../../../core/services/project';
+import { LabelService } from '../../../core/services/label';
 
 @Component({
   selector: 'app-issue-form',
@@ -33,11 +35,13 @@ export class IssueForm implements OnInit {
   
   projects: any[] = [];
   assignees: any[] = [];
+  projectLabels: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private issueService: IssueService,
     private projectService: ProjectService,
+    private labelService: LabelService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -49,6 +53,7 @@ export class IssueForm implements OnInit {
       project: ['', [Validators.required]],
       assignee: [''],
       dueDate: [''],
+      labels: [[]],
     });
   }
 
@@ -61,12 +66,14 @@ export class IssueForm implements OnInit {
       this.loadIssue();
     }
 
-    // Watch for project workspace change to populate corresponding members as assignees
+    // Watch for project workspace change to populate corresponding members as assignees & load labels
     this.form.get('project')?.valueChanges.subscribe((projectId) => {
       if (projectId) {
         this.loadProjectMembers(projectId);
+        this.loadProjectLabels(projectId);
       } else {
         this.assignees = [];
+        this.projectLabels = [];
       }
     });
   }
@@ -93,6 +100,19 @@ export class IssueForm implements OnInit {
     });
   }
 
+  loadProjectLabels(projectId: string, callback?: () => void): void {
+    this.labelService.getLabels(projectId).subscribe({
+      next: (res) => {
+        this.projectLabels = res.data || [];
+        if (callback) callback();
+      },
+      error: () => {
+        this.projectLabels = [];
+        if (callback) callback();
+      }
+    });
+  }
+
   loadIssue(): void {
     this.loading = true;
     this.issueService.getIssue(this.issueId).subscribe({
@@ -101,16 +121,20 @@ export class IssueForm implements OnInit {
         const projectId = issue.project ? (typeof issue.project === 'string' ? issue.project : issue.project._id) : '';
         
         this.loadProjectMembers(projectId, () => {
-          this.form.patchValue({
-            title: issue.title,
-            description: issue.description || '',
-            type: issue.type,
-            priority: issue.priority,
-            project: projectId,
-            assignee: !issue.assignee ? '' : (typeof issue.assignee === 'string' ? issue.assignee : issue.assignee._id),
-            dueDate: issue.dueDate ? new Date(issue.dueDate).toISOString().substring(0, 10) : '',
+          this.loadProjectLabels(projectId, () => {
+            const labelIds = (issue.labels || []).map((l: any) => typeof l === 'string' ? l : l._id);
+            this.form.patchValue({
+              title: issue.title,
+              description: issue.description || '',
+              type: issue.type,
+              priority: issue.priority,
+              project: projectId,
+              assignee: !issue.assignee ? '' : (typeof issue.assignee === 'string' ? issue.assignee : issue.assignee._id),
+              dueDate: issue.dueDate ? new Date(issue.dueDate).toISOString().substring(0, 10) : '',
+              labels: labelIds,
+            });
+            this.loading = false;
           });
-          this.loading = false;
         });
       },
       error: () => {
@@ -118,6 +142,33 @@ export class IssueForm implements OnInit {
         this.router.navigate(['/issues']);
       },
     });
+  }
+
+  isLabelSelected(labelId: string): boolean {
+    const selectedLabels = this.form.get('labels')?.value || [];
+    return selectedLabels.includes(labelId);
+  }
+
+  toggleLabelSelection(labelId: string): void {
+    const selectedLabels = [...(this.form.get('labels')?.value || [])];
+    const index = selectedLabels.indexOf(labelId);
+    if (index > -1) {
+      selectedLabels.splice(index, 1);
+    } else {
+      selectedLabels.push(labelId);
+    }
+    this.form.patchValue({ labels: selectedLabels });
+  }
+
+  getContrastColor(hexColor: string): string {
+    if (!hexColor) return '#ffffff';
+    const hex = hexColor.replace('#', '');
+    if (hex.length !== 6) return '#ffffff';
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? '#1e293b' : '#ffffff';
   }
 
   submit(): void {
@@ -135,6 +186,7 @@ export class IssueForm implements OnInit {
       type: formVal.type,
       priority: formVal.priority,
       project: formVal.project,
+      labels: formVal.labels || [],
     };
 
     if (formVal.assignee) {

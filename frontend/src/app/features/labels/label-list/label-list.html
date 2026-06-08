@@ -1,0 +1,95 @@
+<!--
+  label-list.html
+
+  WHY:
+  User interface to view all project-scoped labels and perform quick CRUD actions.
+-->
+
+<section class="label-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Workspace Management</p>
+      <h2>Labels</h2>
+    </div>
+    
+    <a 
+      [routerLink]="['/labels/create']" 
+      [queryParams]="{ projectId: selectedProjectId }"
+      class="create-btn"
+    >
+      <mat-icon>add</mat-icon>
+      Create Label
+    </a>
+  </div>
+
+  <!-- Project Selector -->
+  <div class="project-selector-card">
+    <div class="selector-group">
+      <label for="projectSelect">Select Project Workspace</label>
+      <select 
+        id="projectSelect" 
+        [(ngModel)]="selectedProjectId" 
+        (change)="loadLabels()"
+      >
+        <option value="" disabled>Choose a project</option>
+        @for (proj of projects; track proj._id) {
+          <option [value]="proj._id">{{ proj.title }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="empty-state">
+      <mat-icon class="spin">hourglass_top</mat-icon>
+      <p>Loading labels...</p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading && (!selectedProjectId || labels.length === 0)) {
+    <div class="empty-state">
+      <mat-icon>sell</mat-icon>
+      <h3>No Labels Found</h3>
+      <p>
+        {{ selectedProjectId ? 'Create a new label to organize your issues.' : 'Select a project to view its labels.' }}
+      </p>
+    </div>
+  }
+
+  <!-- Labels Grid -->
+  @if (!loading && labels.length > 0) {
+    <div class="labels-grid">
+      @for (label of labels; track label._id) {
+        <article class="label-card">
+          <div class="label-preview-wrapper">
+            <span 
+              class="label-badge-preview" 
+              [style.background-color]="label.color"
+              [style.color]="getContrastColor(label.color)"
+            >
+              {{ label.name }}
+            </span>
+          </div>
+
+          <div class="label-details">
+            <span class="label-color-code">{{ label.color }}</span>
+            <p class="description">
+              {{ label.description || 'No description provided.' }}
+            </p>
+          </div>
+
+          <div class="label-actions">
+            <button (click)="editLabel(label._id)" class="action-btn edit-btn">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button (click)="deleteLabel(label._id)" class="action-btn delete-btn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
