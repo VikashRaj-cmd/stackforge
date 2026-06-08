@@ -1,0 +1,123 @@
+<!--
+  issue-form.html
+
+  WHY:
+  User interface for registering and modifying bugs, features, and tasks.
+-->
+
+<section class="form-page">
+  <div class="form-card">
+    <div class="header">
+      <div class="icon">
+        <mat-icon>
+          {{ isEditMode ? 'edit' : 'add_circle' }}
+        </mat-icon>
+      </div>
+
+      <div>
+        <h2>
+          {{ isEditMode ? 'Update Issue' : 'Create Issue' }}
+        </h2>
+        <p>Log and track development tasks, bugs, or feature requests.</p>
+      </div>
+    </div>
+
+    @if (loading && isEditMode) {
+      <div class="loading-container">
+        <mat-icon class="spin">hourglass_top</mat-icon>
+        <p>Loading issue details...</p>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label>Issue Title <span class="required">*</span></label>
+          <input
+            type="text"
+            placeholder="Enter a descriptive title"
+            formControlName="title"
+          />
+          @if (form.get('title')?.touched && form.get('title')?.errors?.['required']) {
+            <span class="error-msg">Title is required.</span>
+          }
+          @if (form.get('title')?.touched && form.get('title')?.errors?.['minlength']) {
+            <span class="error-msg">Title must be at least 3 characters.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <textarea
+            rows="5"
+            placeholder="Describe the issue or task in detail..."
+            formControlName="description"
+          ></textarea>
+        </div>
+
+        <div class="row-fields">
+          <div class="field">
+            <label>Type <span class="required">*</span></label>
+            <select formControlName="type">
+              <option value="bug">Bug</option>
+              <option value="feature">Feature</option>
+              <option value="task">Task</option>
+              <option value="improvement">Improvement</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Priority <span class="required">*</span></label>
+            <select formControlName="priority">
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row-fields">
+          <div class="field">
+            <label>Project Workspace <span class="required">*</span></label>
+            <select formControlName="project" [attr.disabled]="isEditMode ? true : null">
+              <option value="" disabled selected>Select a project</option>
+              @for (proj of projects; track proj._id) {
+                <option [value]="proj._id">{{ proj.title }}</option>
+              }
+            </select>
+            @if (form.get('project')?.touched && form.get('project')?.errors?.['required']) {
+              <span class="error-msg">Project workspace is required.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label>Assignee</label>
+            <select formControlName="assignee">
+              <option value="">Unassigned</option>
+              @for (user of assignees; track user._id) {
+                <option [value]="user._id">{{ user.name }} ({{ user.email }})</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Due Date</label>
+          <input
+            type="date"
+            formControlName="dueDate"
+          />
+        </div>
+
+        <div class="form-actions">
+          <a routerLink="/issues" class="cancel-btn">Cancel</a>
+          <button type="submit" [disabled]="loading">
+            <mat-icon>
+              {{ isEditMode ? 'save' : 'add' }}
+            </mat-icon>
+            {{ isEditMode ? 'Update Issue' : 'Create Issue' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</section>

@@ -25,20 +25,25 @@ interface NavItem {
 })
 export class Sidebar {
   navItems: NavItem[] = [
-  {
-    label: 'Dashboard',
-    icon: 'dashboard',
-    route: '/',
-  },
-  {
-    label: 'Projects',
-    icon: 'folder',
-    route: '/projects',
-  },
-  {
-    label: 'Issues',
-    icon: 'bug_report',
-    route: '/issues',
-  },
+    {
+      label: 'Dashboard',
+      icon: 'dashboard',
+      route: '/',
+    },
+    {
+      label: 'Projects',
+      icon: 'folder',
+      route: '/projects',
+    },
+    {
+      label: 'Issues',
+      icon: 'bug_report',
+      route: '/issues',
+    },
+    {
+      label: 'Board',
+      icon: 'view_kanban',
+      route: '/issues/board',
+    },
   ];
 }

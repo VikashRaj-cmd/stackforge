@@ -1,0 +1,152 @@
+<!--
+  issue-list.html
+
+  WHY:
+  Provides a clean, filterable list of issues inside a responsive data table.
+-->
+
+<section class="issue-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Workspace Management</p>
+      <h2>Issue Tracker</h2>
+    </div>
+    <a routerLink="/issues/create" class="create-btn">
+      <mat-icon>add</mat-icon>
+      Create Issue
+    </a>
+  </div>
+
+  <!-- Filters Panel -->
+  <div class="filters-card">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (ngModelChange)="loadIssues()"
+        placeholder="Search issues by title or description..."
+      />
+    </div>
+
+    <div class="select-filters">
+      <div class="filter-group">
+        <label>Status</label>
+        <select [(ngModel)]="status" (change)="loadIssues()">
+          <option value="">All Statuses</option>
+          <option value="open">Open</option>
+          <option value="in-progress">In Progress</option>
+          <option value="in-review">In Review</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Priority</label>
+        <select [(ngModel)]="priority" (change)="loadIssues()">
+          <option value="">All Priorities</option>
+          <option value="critical">Critical</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Type</label>
+        <select [(ngModel)]="type" (change)="loadIssues()">
+          <option value="">All Types</option>
+          <option value="bug">Bug</option>
+          <option value="feature">Feature</option>
+          <option value="task">Task</option>
+          <option value="improvement">Improvement</option>
+        </select>
+      </div>
+
+      <button (click)="resetFilters()" class="reset-btn">
+        <mat-icon>restart_alt</mat-icon>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="empty-state">
+      <mat-icon class="spin">hourglass_top</mat-icon>
+      <p>Loading issues...</p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading && issues.length === 0) {
+    <div class="empty-state">
+      <mat-icon>bug_report</mat-icon>
+      <h3>No Issues Found</h3>
+      <p>Try refining your search or create a new issue to get started.</p>
+    </div>
+  }
+
+  <!-- Issues Table -->
+  @if (!loading && issues.length > 0) {
+    <div class="table-container">
+      <table class="issue-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Reporter</th>
+            <th>Assignee</th>
+            <th>Created Date</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (issue of issues; track issue._id) {
+            <tr [routerLink]="['/issues', issue._id]" class="issue-row">
+              <td class="title-cell">
+                <span class="issue-title">{{ issue.title }}</span>
+                <span class="project-tag">{{ issue.project?.title || 'Unknown Project' }}</span>
+              </td>
+              <td>
+                <span class="badge type-badge" [ngClass]="issue.type">
+                  {{ issue.type }}
+                </span>
+              </td>
+              <td>
+                <span class="badge status-badge" [ngClass]="issue.status">
+                  {{ issue.status }}
+                </span>
+              </td>
+              <td>
+                <span class="badge priority-badge" [ngClass]="issue.priority">
+                  {{ issue.priority }}
+                </span>
+              </td>
+              <td class="user-cell">
+                {{ issue.reporter?.name || 'System' }}
+              </td>
+              <td class="user-cell">
+                {{ issue.assignee?.name || 'Unassigned' }}
+              </td>
+              <td class="date-cell">
+                {{ issue.createdAt | date:'MMM d, y' }}
+              </td>
+              <td class="actions-cell">
+                <button (click)="editIssue(issue._id, $event)" class="action-btn edit-btn">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button (click)="deleteIssue(issue._id, $event)" class="action-btn delete-btn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

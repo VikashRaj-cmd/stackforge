@@ -1,0 +1,90 @@
+<!--
+  issue-board.html
+
+  WHY:
+  Provides a visual overview of task progression through interactive Kanban columns.
+-->
+
+<section class="board-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Workspace Management</p>
+      <h2>Kanban Board</h2>
+    </div>
+    <a routerLink="/issues/create" class="create-btn">
+      <mat-icon>add</mat-icon>
+      Create Issue
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <mat-icon class="spin">hourglass_top</mat-icon>
+      <p>Loading board...</p>
+    </div>
+  } @else {
+    <div class="board-container">
+      @for (col of columns; track col.status) {
+        <div 
+          class="board-column"
+          (dragover)="onDragOver($event)"
+          (drop)="onDrop(col.status, $event)"
+        >
+          <div class="column-header" [ngClass]="col.status">
+            <div class="col-title">
+              <mat-icon>{{ col.icon }}</mat-icon>
+              <span>{{ col.name }}</span>
+            </div>
+            <span class="count-badge">{{ getIssuesByStatus(col.status).length }}</span>
+          </div>
+
+          <div class="column-cards">
+            @for (issue of getIssuesByStatus(col.status); track issue._id) {
+              <div 
+                class="issue-card" 
+                draggable="true"
+                (dragstart)="onDragStart(issue, $event)"
+                (click)="viewIssue(issue._id)"
+              >
+                <div class="card-meta">
+                  <span class="badge type-badge" [ngClass]="issue.type">{{ issue.type }}</span>
+                  <span class="badge priority-badge" [ngClass]="issue.priority">{{ issue.priority }}</span>
+                </div>
+                
+                <h4>{{ issue.title }}</h4>
+                
+                @if (issue.project?.title) {
+                  <div class="project-tag">
+                    <mat-icon>folder</mat-icon>
+                    <span>{{ issue.project.title }}</span>
+                  </div>
+                }
+
+                <div class="card-footer">
+                  <div class="assignee">
+                    <div class="avatar-sm">
+                      {{ (issue.assignee?.name?.substring(0, 1) || '?').toUpperCase() }}
+                    </div>
+                    <span>{{ issue.assignee?.name || 'Unassigned' }}</span>
+                  </div>
+                  
+                  @if (issue.dueDate) {
+                    <div class="due-date">
+                      <mat-icon>calendar_month</mat-icon>
+                      <span>{{ issue.dueDate | date:'MMM d' }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-column-state">
+                <mat-icon>drag_indicator</mat-icon>
+                <p>Drag items here</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>

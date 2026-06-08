@@ -12,6 +12,11 @@ import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { authGuard } from './core/guards/authGuard';
 
+import { IssueList } from './features/issues/issue-list/issue-list';
+import { IssueForm } from './features/issues/issue-form/issue-form';
+import { IssueDetails } from './features/issues/issue-details/issue-details';
+import { IssueBoard } from './features/issues/issue-board/issue-board';
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -61,21 +66,31 @@ export const routes: Routes = [
       /**
        * Issue Routes
        */
-      // {
-      //   path: 'issues',
-      //   loadComponent: () => import('./features/issues/issue-list/issue-list').then((m) => m.IssueList),
-      //   title: 'Issues | StackForge',
-      // },
-      // {
-      //   path: 'issues/create',
-      //   loadComponent: () => import('./features/issues/issue-form/issue-form').then((m) => m.IssueForm),
-      //   title: 'Create Issue | StackForge',
-      // },
-      // {
-      //   path: 'issues/:id',
-      //   loadComponent: () => import('./features/issues/issue-detail/issue-detail').then((m) => m.IssueDetail),
-      //   title: 'Issue Detail | StackForge',
-      // },
+      {
+        path: 'issues',
+        component: IssueList,
+        title: 'Issues | Issue Tracker',
+      },
+      {
+        path: 'issues/create',
+        component: IssueForm,
+        title: 'Create Issue | Issue Tracker',
+      },
+      {
+        path: 'issues/edit/:id',
+        component: IssueForm,
+        title: 'Edit Issue | Issue Tracker',
+      },
+      {
+        path: 'issues/board',
+        component: IssueBoard,
+        title: 'Kanban Board | Issue Tracker',
+      },
+      {
+        path: 'issues/:id',
+        component: IssueDetails,
+        title: 'Issue Details | Issue Tracker',
+      },
     ],
   },
   {
