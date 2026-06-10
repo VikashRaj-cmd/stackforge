@@ -15,6 +15,9 @@ import { IssueList } from './features/issues/issue-list/issue-list';
 import { IssueForm } from './features/issues/issue-form/issue-form';
 import { IssueDetails } from './features/issues/issue-details/issue-details';
 import { IssueBoard } from './features/issues/issue-board/issue-board';
+import { UserList } from './features/users/user-list/user-list';
+import { UserDetails } from './features/users/user-details/user-details';
+import { ActivityList } from './features/activity/activity-list/activity-list';
 
 export const routes: Routes = [
   {
@@ -104,6 +107,21 @@ export const routes: Routes = [
         path: 'labels/edit/:id',
         loadComponent: () => import('./features/labels/label-form/label-form').then((m) => m.LabelForm),
         title: 'Edit Label | StackForge',
+      },
+      {
+        path: 'users',
+        component: UserList,
+        title: 'Users | Issue Tracker',
+      },
+      {
+        path: 'users/:id',
+        component: UserDetails,
+        title: 'User Details | Issue Tracker',
+      },
+      {
+        path: 'activity',
+        component: ActivityList,
+        title: 'Activity Logs | Issue Tracker',
       },
     ],
   },

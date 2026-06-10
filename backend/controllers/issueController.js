@@ -8,6 +8,7 @@
 
 import Issue from "../models/Issue.js";
 import ActivityLog from "../models/ActivityLog.js";
+import Project from "../models/Project.js";
 import AppError from "../utils/AppError.js";
 import catchAsync from "../utils/catchAsync.js";
 import { applyPagination, buildPaginationMeta } from "../utils/queryHelper.js";
@@ -140,8 +141,12 @@ export const deleteIssue = catchAsync(async (req, res, next) => {
     return next(new AppError("Issue not found", 404));
   }
 
-  if (issue.reporter.toString() !== req.user.id.toString()) {
-    return next(new AppError("You can only delete issues you reported", 403));
+  const project = await Project.findById(issue.project);
+  const isProjectOwner = project && project.owner.toString() === req.user.id.toString();
+  const isAdmin = req.user.role === "admin";
+
+  if (issue.reporter.toString() !== req.user.id.toString() && !isProjectOwner && !isAdmin) {
+    return next(new AppError("You can only delete issues you reported, or if you are project owner / admin", 403));
   }
 
   await Issue.findByIdAndDelete(req.params.id);
@@ -164,8 +169,12 @@ export const updateIssueStatus = catchAsync(async (req, res, next) => {
   const isReporter = issue.reporter.toString() === req.user.id.toString();
   const isAssignee = issue.assignee && issue.assignee.toString() === req.user.id.toString();
 
-  if (!isReporter && !isAssignee) {
-    return next(new AppError("Only reporter or assignee can change issue status", 403));
+  const project = await Project.findById(issue.project);
+  const isProjectOwner = project && project.owner.toString() === req.user.id.toString();
+  const isAdmin = req.user.role === "admin";
+
+  if (!isReporter && !isAssignee && !isProjectOwner && !isAdmin) {
+    return next(new AppError("Only reporter, assignee, project owner, or admin can change issue status", 403));
   }
 
   const previousStatus = issue.status;

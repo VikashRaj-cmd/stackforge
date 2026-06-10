@@ -33,4 +33,11 @@ export class UserService {
   getUsers(): Observable<UserListResponse> {
     return this.http.get<UserListResponse>(`${API_BASE_URL}/users`);
   }
+
+  /**
+   * Get user details from backend.
+   */
+  getUser(id: string): Observable<any> {
+    return this.http.get<any>(`${API_BASE_URL}/users/${id}`);
+  }
 }

@@ -7,7 +7,7 @@
  * It also registers JWT interceptor globally.
  */
 
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import {
   provideHttpClient,
@@ -20,6 +20,7 @@ import { authInterceptor } from './core/interceptors/authInterceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZonelessChangeDetection(),
     provideRouter(routes),
 
     /**

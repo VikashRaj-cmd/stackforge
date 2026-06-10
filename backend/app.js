@@ -17,6 +17,7 @@ import projectRoutes from "./routes/projectRoutes.js";
 import issueRoutes from "./routes/issueRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import labelRoutes from "./routes/labelRoutes.js";
+import activityRoutes from "./routes/activityRoutes.js";
 
 import requestId from "./middlewares/requestId.js";
 import requestLogger from "./middlewares/requestLogger.js";
@@ -106,6 +107,7 @@ app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/issues", issueRoutes);
 app.use("/api/v1/issues/:issueId/comments", commentRoutes);
 app.use("/api/v1/projects/:projectId/labels", labelRoutes);
+app.use("/api/v1/activity", activityRoutes);
 
 /**
  * Central error handler

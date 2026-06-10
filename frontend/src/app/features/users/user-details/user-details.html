@@ -1,0 +1,193 @@
+<div class="page-header">
+  <div class="back-link">
+    <a routerLink="/users" class="btn-back">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back to Users</span>
+    </a>
+  </div>
+</div>
+
+<div class="content-container">
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading user profile details...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="error-state">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h3>Error Loading Profile</h3>
+      <p>{{ errorMessage }}</p>
+    </div>
+  } @else if (user) {
+    <div class="profile-layout">
+      <!-- Left Column: User Profile Card -->
+      <div class="profile-card">
+        <div class="profile-avatar-container">
+          @if (user.avatar) {
+            <img [src]="user.avatar" [alt]="user.name" class="profile-avatar" />
+          } @else {
+            <div class="profile-avatar-placeholder">
+              <mat-icon>person</mat-icon>
+            </div>
+          }
+        </div>
+
+        <div class="profile-info">
+          <h2>{{ user.name }}</h2>
+          <p class="profile-email">{{ user.email }}</p>
+          <span class="badge" [class]="getRoleBadgeClass(user.role)">
+            {{ user.role | titlecase }}
+          </span>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="profile-meta">
+          <div class="meta-item">
+            <mat-icon>calendar_today</mat-icon>
+            <div>
+              <span class="meta-label">Joined On</span>
+              <span class="meta-value">{{ user.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <mat-icon>badge</mat-icon>
+            <div>
+              <span class="meta-label">User ID</span>
+              <span class="meta-value truncate">{{ user._id }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Details & Contributions -->
+      <div class="contributions-panel">
+        
+        <!-- Summary Stats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <mat-icon>folder</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ assignedProjects.length }}</h3>
+              <p>Projects</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <mat-icon>bug_report</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ assignedIssues.length }}</h3>
+              <p>Assigned Issues</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <mat-icon>history</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ recentActivities.length }}</h3>
+              <p>Activities</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assigned Projects & Issues -->
+        <div class="details-grid">
+          <!-- Projects Section -->
+          <div class="details-card">
+            <div class="card-title-bar">
+              <mat-icon>groups</mat-icon>
+              <h3>Assigned Projects</h3>
+            </div>
+            <div class="list-container">
+              @for (project of assignedProjects; track project._id) {
+                <div class="list-item">
+                  <div class="item-content">
+                    <h4 class="item-title">
+                      <a [routerLink]="['/projects', project._id]">{{ project.title }}</a>
+                    </h4>
+                    <p class="item-desc truncate">{{ project.description || 'No description provided.' }}</p>
+                  </div>
+                  <span class="item-badge">Active</span>
+                </div>
+              } @empty {
+                <div class="empty-list">
+                  <mat-icon>folder_open</mat-icon>
+                  <p>Not assigned to any projects.</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Issues Section -->
+          <div class="details-card">
+            <div class="card-title-bar">
+              <mat-icon>bug_report</mat-icon>
+              <h3>Assigned Issues</h3>
+            </div>
+            <div class="list-container">
+              @for (issue of assignedIssues; track issue._id) {
+                <div class="list-item">
+                  <div class="item-content">
+                    <h4 class="item-title">
+                      <a [routerLink]="['/issues', issue._id]">{{ issue.title }}</a>
+                    </h4>
+                    <div class="item-meta-row">
+                      <span class="issue-type-tag" [class]="issue.type">{{ issue.type | uppercase }}</span>
+                      <span class="issue-priority-tag" [class]="issue.priority">{{ issue.priority }}</span>
+                    </div>
+                  </div>
+                  <span class="item-badge status" [class]="issue.status">{{ issue.status | titlecase }}</span>
+                </div>
+              } @empty {
+                <div class="empty-list">
+                  <mat-icon>check_circle</mat-icon>
+                  <p>All clear! No issues assigned.</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="details-card full-width">
+          <div class="card-title-bar">
+            <mat-icon>history</mat-icon>
+            <h3>Recent Activity Timeline</h3>
+          </div>
+          
+          <div class="timeline">
+            @for (activity of recentActivities; track activity._id) {
+              <div class="timeline-item">
+                <div class="timeline-badge" [class]="activity.action">
+                  <mat-icon>{{ formatActivityIcon(activity.action) }}</mat-icon>
+                </div>
+                <div class="timeline-panel">
+                  <div class="timeline-header">
+                    <span class="timeline-actor">{{ activity.actor?.name }}</span>
+                    <span class="timeline-time">{{ activity.createdAt | date:'short' }}</span>
+                  </div>
+                  <p class="timeline-body">
+                    {{ formatActivityAction(activity) }}
+                  </p>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-list padding-lg">
+                <mat-icon>history_toggle_off</mat-icon>
+                <p>No activity logs recorded for this user yet.</p>
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

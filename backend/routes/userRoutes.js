@@ -15,9 +15,9 @@ import { getAllUsers, getUserById, updateUser, deleteUser } from "../controllers
 const router = express.Router();
 
 /**
- * Admin-only list users
+ * Authenticated users can list users
  */
-router.get("/", protect, restrictTo("admin"), getAllUsers);
+router.get("/", protect, getAllUsers);
 
 /**
  * Logged-in users can fetch/update user by ID

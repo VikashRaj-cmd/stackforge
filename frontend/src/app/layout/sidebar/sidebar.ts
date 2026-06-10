@@ -50,5 +50,15 @@ export class Sidebar {
       icon: 'label',
       route: '/labels',
     },
+    {
+      label: 'Users',
+      icon: 'groups',
+      route: '/users',
+    },
+    {
+      label: 'Activity',
+      icon: 'history',
+      route: '/activity',
+    },
   ];
 }

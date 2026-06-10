@@ -6,6 +6,7 @@
  */
 
 import ActivityLog from "../models/ActivityLog.js";
+import catchAsync from "../utils/catchAsync.js";
 
 // ✅ CREATE LOG
 export const createLog = async (data) => {
@@ -15,3 +16,26 @@ export const createLog = async (data) => {
     console.error("Log error:", error.message);
   }
 };
+
+// ✅ GET ALL LOGS
+export const getActivityLogs = catchAsync(async (req, res) => {
+  const filter = {};
+  if (req.query.actor) {
+    filter.actor = req.query.actor;
+  }
+  if (req.query.issue) {
+    filter.issue = req.query.issue;
+  }
+
+  const activities = await ActivityLog.find(filter)
+    .populate("actor", "name email avatar")
+    .populate("issue", "title")
+    .sort("-createdAt")
+    .lean();
+
+  res.status(200).json({
+    success: true,
+    results: activities.length,
+    data: activities,
+  });
+});
