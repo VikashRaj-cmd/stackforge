@@ -40,6 +40,21 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard/dashboard').then((m) => m.Dashboard),
         title: 'Dashboard | StackForge',
       },
+      {
+        path: 'notifications',
+        loadComponent: () => import('./features/notifications/notification-list/notification-list').then((m) => m.NotificationList),
+        title: 'Notifications | StackForge',
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile/profile').then((m) => m.Profile),
+        title: 'Profile | StackForge',
+      },
+      {
+        path: 'change-password',
+        loadComponent: () => import('./features/profile/change-password/change-password').then((m) => m.ChangePassword),
+        title: 'Change Password | StackForge',
+      },
 
       /**
        * Project Routes

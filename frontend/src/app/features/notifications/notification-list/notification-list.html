@@ -1,0 +1,39 @@
+<section class="notifications-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">User Alerts</p>
+      <h2>Notifications</h2>
+    </div>
+  </div>
+
+  <div class="notifications-container">
+    @for (notification of notifications; track notification.id) {
+      <article class="notification-card" [class.unread]="!notification.read">
+        <div class="card-left">
+          <div class="notification-icon" [class.unread]="!notification.read">
+            <mat-icon>{{ !notification.read ? 'mark_chat_unread' : 'mark_chat_read' }}</mat-icon>
+          </div>
+
+          <div class="notification-details">
+            <h3>{{ notification.title }}</h3>
+            <p>{{ notification.message }}</p>
+            <span class="timestamp">{{ notification.createdAt | date:'medium' }}</span>
+          </div>
+        </div>
+
+        @if (!notification.read) {
+          <button class="mark-btn" (click)="markAsRead(notification.id)">
+            <mat-icon>done</mat-icon>
+            Mark Read
+          </button>
+        }
+      </article>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon>notifications_off</mat-icon>
+        <h3>All caught up!</h3>
+        <p>You have no notifications in your inbox.</p>
+      </div>
+    }
+  </div>
+</section>

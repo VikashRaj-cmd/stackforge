@@ -17,6 +17,15 @@
       <input type="text" placeholder="Search issues, projects..." />
     </div>
 
+    <button class="nav-notification-btn" routerLink="/notifications" aria-label="Notifications" type="button">
+      <mat-icon>notifications</mat-icon>
+      @if (notificationService.unreadCount() > 0) {
+        <span class="badge">
+          {{ notificationService.unreadCount() }}
+        </span>
+      }
+    </button>
+
     <div class="profile-menu">
       <div class="profile-trigger" (click)="toggleDropdown()">
         <div class="avatar">{{ initials }}</div>

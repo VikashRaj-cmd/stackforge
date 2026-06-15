@@ -60,5 +60,15 @@ export class Sidebar {
       icon: 'history',
       route: '/activity',
     },
+    {
+      label: 'Notifications',
+      icon: 'notifications',
+      route: '/notifications',
+    },
+    {
+      label: 'Profile',
+      icon: 'person',
+      route: '/profile',
+    },
   ];
 }

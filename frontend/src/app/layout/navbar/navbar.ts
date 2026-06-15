@@ -7,16 +7,17 @@
  */
 
 import { Component, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../core/services/auth';
+import { NotificationService } from '../../core/services/notification';
 import { User } from '../../core/models/user.model';
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatIconModule],
+  imports: [MatIconModule, RouterLink],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
@@ -26,7 +27,8 @@ export class Navbar {
 
   constructor(
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    public notificationService: NotificationService
   ) {
     this.user = this.auth.getCurrentUser();
   }
