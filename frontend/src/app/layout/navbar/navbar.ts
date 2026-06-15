@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../core/services/auth';
 import { NotificationService } from '../../core/services/notification';
+import { ThemeService } from '../../core/services/theme';
 import { User } from '../../core/models/user.model';
 
 @Component({
@@ -28,9 +29,21 @@ export class Navbar {
   constructor(
     private auth: AuthService,
     private router: Router,
-    public notificationService: NotificationService
+    public notificationService: NotificationService,
+    private themeService: ThemeService
   ) {
     this.user = this.auth.getCurrentUser();
+  }
+
+  /**
+   * Switch between themes.
+   */
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
+
+  get currentTheme(): string {
+    return this.themeService.getCurrentTheme();
   }
 
   get initials(): string {

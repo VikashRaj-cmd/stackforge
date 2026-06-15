@@ -4,6 +4,7 @@
  *
  * WHY:
  * Global base styling for the Angular frontend.
+ * Supports light/dark theme system.
  */
 
 * {
@@ -31,4 +32,274 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+/* =========================
+   LIGHT THEME OVERRIDES
+========================= */
+
+body.light-theme {
+  background: #f5f7fb;
+  color: #0f172a;
+}
+
+/* =========================
+   DARK THEME OVERRIDES
+========================= */
+
+body.dark-theme {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+body.dark-theme .app-shell {
+  background: #0f172a;
+}
+
+body.dark-theme .navbar {
+  background: #1e293b;
+  border-bottom-color: #334155;
+  color: #f8fafc;
+}
+
+body.dark-theme .navbar h1 {
+  color: #f8fafc;
+}
+
+body.dark-theme .navbar .welcome {
+  color: #94a3b8;
+}
+
+body.dark-theme .navbar .profile-name {
+  color: #f8fafc;
+}
+
+body.dark-theme .navbar .profile-role {
+  color: #94a3b8;
+}
+
+body.dark-theme .navbar .search-box {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-theme .navbar .search-box input {
+  color: #f8fafc;
+}
+
+body.dark-theme .navbar .search-box input::placeholder {
+  color: #64748b;
+}
+
+body.dark-theme .navbar .dropdown {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .navbar .dh-name {
+  color: #f8fafc;
+}
+
+body.dark-theme .navbar .dh-email {
+  color: #94a3b8;
+}
+
+body.dark-theme .navbar .dropdown-divider {
+  background-color: #334155;
+}
+
+body.dark-theme .navbar .dropdown-item {
+  color: #cbd5e1;
+}
+
+body.dark-theme .navbar .dropdown-item:hover {
+  background: #334155;
+}
+
+body.dark-theme .nav-notification-btn,
+body.dark-theme .nav-theme-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-theme .nav-notification-btn:hover,
+body.dark-theme .nav-theme-btn:hover {
+  background: #334155;
+  color: #3b82f6;
+  border-color: #475569;
+}
+
+/* Cards & Panels */
+
+body.dark-theme .panel,
+body.dark-theme .stat-card,
+body.dark-theme .card,
+body.dark-theme .project-card,
+body.dark-theme .issue-card,
+body.dark-theme .profile-card,
+body.dark-theme .settings-card,
+body.dark-theme .form-panel {
+  background: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+body.dark-theme .stat-info h2 {
+  color: #f8fafc;
+}
+
+body.dark-theme .stat-info span {
+  color: #94a3b8;
+}
+
+body.dark-theme .panel-header {
+  border-bottom-color: #334155;
+}
+
+body.dark-theme .panel-header h3 {
+  color: #f8fafc;
+}
+
+body.dark-theme .panel-header .badge {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-theme .project-row,
+body.dark-theme .issue-row,
+body.dark-theme .activity-item {
+  background: #182235;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+body.dark-theme .project-row:hover,
+body.dark-theme .issue-row:hover {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+body.dark-theme .project-info strong,
+body.dark-theme .issue-row h4 {
+  color: #f8fafc;
+}
+
+body.dark-theme .project-info p,
+body.dark-theme .issue-row p {
+  color: #94a3b8;
+}
+
+body.dark-theme .activity-text {
+  color: #cbd5e1;
+}
+
+body.dark-theme .activity-time {
+  color: #64748b;
+}
+
+body.dark-theme .activity-timeline::before {
+  background: #334155;
+}
+
+body.dark-theme .chart-label .name {
+  color: #cbd5e1;
+}
+
+body.dark-theme .chart-bar-container {
+  background: #334155;
+}
+
+body.dark-theme .chart-value strong {
+  color: #f8fafc;
+}
+
+body.dark-theme .chart-value .percent {
+  color: #64748b;
+}
+
+/* Forms & Inputs */
+
+body.dark-theme label {
+  color: #cbd5e1;
+}
+
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+body.dark-theme input:focus,
+body.dark-theme textarea:focus,
+body.dark-theme select:focus {
+  border-color: #6366f1;
+}
+
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+  color: #475569;
+}
+
+body.dark-theme .change-password-link {
+  background: #182235;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-theme .change-password-link:hover {
+  background: #334155;
+  color: #3b82f6;
+  border-color: #475569;
+}
+
+body.dark-theme .info-item {
+  border-bottom-color: #334155;
+}
+
+body.dark-theme .info-item .value {
+  color: #f8fafc;
+}
+
+body.dark-theme .info-item .value.code {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-theme .info-card h3 {
+  color: #f8fafc;
+}
+
+body.dark-theme .info-card .divider {
+  background-color: #334155;
+}
+
+/* Tables */
+
+body.dark-theme table {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+body.dark-theme th {
+  background: #0f172a;
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+body.dark-theme td {
+  border-bottom-color: #334155;
+}
+
+/* Material Icons */
+
+body.dark-theme mat-icon {
+  color: #cbd5e1;
+}
+
+body.dark-theme .hero-content h1 {
+  color: white;
 }

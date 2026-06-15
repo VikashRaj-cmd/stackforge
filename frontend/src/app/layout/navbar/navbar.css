@@ -52,8 +52,9 @@
   width: 100%;
 }
 
-/* ── Notification Bell Button ── */
-.nav-notification-btn {
+/* ── Notification Bell Button & Theme Toggle Button ── */
+.nav-notification-btn,
+.nav-theme-btn {
   position: relative;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -69,14 +70,16 @@
   flex-shrink: 0;
 }
 
-.nav-notification-btn:hover {
+.nav-notification-btn:hover,
+.nav-theme-btn:hover {
   background: #f1f5f9;
   color: #3b82f6;
   border-color: #cbd5e1;
   transform: translateY(-1px);
 }
 
-.nav-notification-btn mat-icon {
+.nav-notification-btn mat-icon,
+.nav-theme-btn mat-icon {
   font-size: 22px;
   width: 22px;
   height: 22px;
