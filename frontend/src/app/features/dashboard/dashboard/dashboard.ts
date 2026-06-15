@@ -2,129 +2,176 @@
  * dashboard.ts
  *
  * WHY:
- * Dashboard connects frontend UI with backend APIs.
- * It loads projects and issues to show real summary cards.
- * Users endpoint is admin-only so it is not called here.
+ * Central analytics dashboard.
  */
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-
+import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { ProjectService } from '../../../core/services/project';
-import { IssueService } from '../../../core/services/issue';
-import { Issue } from '../../../core/models/issue.model';
-
-interface StatCard {
-  title: string;
-  value: string;
-  icon: string;
-  helper: string;
-}
+import { DashboardService } from '../../../core/services/dashboard';
+import { AuthService } from '../../../core/services/auth';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    RouterLink,
+  ],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css'],
+  styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
   loading = true;
   errorMessage = '';
+  currentUser: User | null = null;
 
   totalProjects = 0;
   totalIssues = 0;
   openIssues = 0;
   resolvedIssues = 0;
 
-  recentIssues: Issue[] = [];
+  recentProjects: any[] = [];
+  recentActivities: any[] = [];
 
-  /**
-   * Track pending API requests to control loading state.
-   */
-  private pending = 2;
+  statusStats: { status: string; count: number; percentage: number; color: string }[] = [];
+  priorityStats: { priority: string; count: number; percentage: number; color: string }[] = [];
 
   constructor(
-    private projectService: ProjectService,
-    private issueService: IssueService
+    private dashboardService: DashboardService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.loadProjects();
-    this.loadIssues();
+    this.currentUser = this.authService.getCurrentUser();
+    this.loadDashboard();
   }
 
   /**
-   * Load all projects for count.
+   * Load dashboard analytics.
    */
-  private loadProjects(): void {
-    this.projectService.getProjects().subscribe({
-      next: (res) => {
-        this.totalProjects = res.data?.length || 0;
-        this.tick();
-      },
-      error: () => {
-        this.errorMessage = 'Unable to load projects.';
-        this.tick();
-      },
-    });
+  loadDashboard(): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.dashboardService
+      .getDashboardData()
+      .subscribe({
+        next: (data) => {
+          const projects = data.projects.data || [];
+          const issues = data.issues.data || [];
+          const activities = data.activities.data || [];
+
+          this.totalProjects = projects.length;
+          this.totalIssues = issues.length;
+
+          this.openIssues = issues.filter(
+            (issue: any) => issue.status === 'open'
+          ).length;
+
+          this.resolvedIssues = issues.filter(
+            (issue: any) => issue.status === 'resolved'
+          ).length;
+
+          this.recentProjects = projects.slice(0, 5);
+          this.recentActivities = activities.slice(0, 5);
+
+          // Status distribution aggregation
+          const statusMap = {
+            'open': { count: 0, color: '#3b82f6' }, // blue
+            'in-progress': { count: 0, color: '#f59e0b' }, // amber
+            'in-review': { count: 0, color: '#a855f7' }, // purple
+            'resolved': { count: 0, color: '#10b981' }, // green
+            'closed': { count: 0, color: '#64748b' } // slate
+          };
+
+          // Priority distribution aggregation
+          const priorityMap = {
+            'critical': { count: 0, color: '#ef4444' }, // red
+            'high': { count: 0, color: '#f97316' }, // orange
+            'medium': { count: 0, color: '#3b82f6' }, // blue
+            'low': { count: 0, color: '#10b981' } // green
+          };
+
+          issues.forEach((issue: any) => {
+            const statusKey = (issue.status || '').toLowerCase();
+            if (statusKey in statusMap) {
+              statusMap[statusKey as keyof typeof statusMap].count++;
+            }
+            const priorityKey = (issue.priority || '').toLowerCase();
+            if (priorityKey in priorityMap) {
+              priorityMap[priorityKey as keyof typeof priorityMap].count++;
+            }
+          });
+
+          // Convert to arrays with percentages
+          this.statusStats = Object.entries(statusMap).map(([status, item]) => ({
+            status: this.formatLabel(status),
+            count: item.count,
+            percentage: this.totalIssues > 0 ? (item.count / this.totalIssues) * 100 : 0,
+            color: item.color
+          }));
+
+          this.priorityStats = Object.entries(priorityMap).map(([priority, item]) => ({
+            priority: this.formatLabel(priority),
+            count: item.count,
+            percentage: this.totalIssues > 0 ? (item.count / this.totalIssues) * 100 : 0,
+            color: item.color
+          }));
+
+          this.loading = false;
+        },
+        error: (err) => {
+          this.errorMessage = err?.error?.message || 'Failed to load dashboard metrics.';
+          this.loading = false;
+        }
+      });
   }
 
   /**
-   * Load issues for counts and recent list.
+   * Helper to format labels from kebab-case/lowercase to capitalized words.
    */
-  private loadIssues(): void {
-    this.issueService.getIssues('?page=1&limit=100&sort=-createdAt').subscribe({
-      next: (res) => {
-        const issues = res.data || [];
-        this.totalIssues = res.meta?.total || issues.length;
-        this.openIssues = issues.filter((i) => i.status === 'open').length;
-        this.resolvedIssues = issues.filter((i) => i.status === 'resolved').length;
-        this.recentIssues = issues.slice(0, 5);
-        this.tick();
-      },
-      error: () => {
-        this.errorMessage = 'Unable to load issues.';
-        this.tick();
-      },
-    });
+  private formatLabel(val: string): string {
+    return val
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   /**
-   * Decrement pending counter; set loading false when all done.
+   * Generates a descriptive log message depending on the action performed.
    */
-  private tick(): void {
-    this.pending--;
-    if (this.pending <= 0) this.loading = false;
+  getActivityText(activity: any): string {
+    const actorName = activity.actor?.name || 'Someone';
+    const issueTitle = activity.issue?.title ? `"${activity.issue.title}"` : 'an issue';
+    
+    switch (activity.action) {
+      case 'status_changed':
+        return `${actorName} updated status of ${issueTitle} to "${activity.afterValue}"`;
+      case 'priority_changed':
+        return `${actorName} changed priority of ${issueTitle} to "${activity.afterValue}"`;
+      case 'assigned':
+        return `${actorName} assigned ${issueTitle}`;
+      case 'unassigned':
+        return `${actorName} unassigned ${issueTitle}`;
+      case 'commented':
+        return `${actorName} commented on ${issueTitle}`;
+      default:
+        return `${actorName} performed action "${activity.action}" on ${issueTitle}`;
+    }
   }
 
-  /**
-   * Dashboard statistic cards.
-   */
-  get stats(): StatCard[] {
-    return [
-      { title: 'Total Projects', value: String(this.totalProjects), icon: 'folder', helper: 'Active project workspaces' },
-      { title: 'Total Issues', value: String(this.totalIssues), icon: 'bug_report', helper: 'All tracked issues' },
-      { title: 'Open Issues', value: String(this.openIssues), icon: 'pending_actions', helper: 'Need attention' },
-      { title: 'Resolved Issues', value: String(this.resolvedIssues), icon: 'task_alt', helper: 'Completed issues' },
-    ];
-  }
-
-  /**
-   * Track stat cards by title.
-   */
-  trackByStat(_: number, stat: StatCard): string {
-    return stat.title;
-  }
-
-  /**
-   * Track issue rows by ID.
-   */
-  trackByIssue(_: number, issue: Issue): string {
-    return issue._id;
+  getActivityIcon(action: string): string {
+    switch (action) {
+      case 'status_changed': return 'check_circle_outline';
+      case 'assigned': return 'person_add';
+      case 'unassigned': return 'person_remove';
+      case 'commented': return 'chat_bubble_outline';
+      default: return 'history';
+    }
   }
 }

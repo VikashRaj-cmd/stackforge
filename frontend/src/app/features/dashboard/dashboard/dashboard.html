@@ -1,162 +1,215 @@
 <section class="dashboard">
 
-  <div class="hero-card">
-    <div>
+  @if (loading) {
+    <div class="dashboard-loading">
+      <mat-icon class="spinner">hourglass_empty</mat-icon>
+      <p>Loading your workspace overview...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="dashboard-error">
+      <mat-icon>error_outline</mat-icon>
+      <p>{{ errorMessage }}</p>
+      <button (click)="loadDashboard()" class="retry-btn">Retry</button>
+    </div>
+  } @else {
 
-      <p class="eyebrow">Full Stack MEAN Project</p>
+    <!-- Welcome & Hero Header -->
+    <div class="hero">
+      <div class="hero-content">
+        <h1>Welcome Back, {{ currentUser?.name || 'User' }}</h1>
+        <p>Workspace Overview • Monitor projects, issues, and team activity in real time.</p>
+      </div>
+      <div class="quick-actions">
+        <a routerLink="/projects/create" class="action-btn">
+          <mat-icon>create_new_folder</mat-icon>
+          <span>New Project</span>
+        </a>
+        <a routerLink="/issues/create" class="action-btn">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>New Issue</span>
+        </a>
+        <a routerLink="/issues/board" class="action-btn secondary">
+          <mat-icon>dashboard</mat-icon>
+          <span>Board View</span>
+        </a>
+      </div>
+    </div>
 
-      <h2>
-        Manage bugs, projects, labels and team workflow in one place.
-      </h2>
+    <!-- Statistics Grid -->
+    <div class="stats-grid">
 
-      <p class="hero-text">
-        Your backend APIs are connected with Angular frontend modules.
-      </p>
+      <div class="stat-card" [routerLink]="['/projects']">
+        <div class="stat-icon-wrapper">
+          <mat-icon>folder</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{ totalProjects }}</h2>
+          <span>Total Projects</span>
+        </div>
+      </div>
 
-      <div class="hero-actions">
+      <div class="stat-card" [routerLink]="['/issues']">
+        <div class="stat-icon-wrapper">
+          <mat-icon>bug_report</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{ totalIssues }}</h2>
+          <span>Total Issues</span>
+        </div>
+      </div>
 
-        <button class="primary-btn">
-          Create Issue
-        </button>
+      <div class="stat-card" [routerLink]="['/issues']">
+        <div class="stat-icon-wrapper warning">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{ openIssues }}</h2>
+          <span>Open Issues</span>
+        </div>
+      </div>
 
-        <button
-          class="secondary-btn"
-          [routerLink]="['/projects']"
-        >
-          View Projects
-        </button>
-
+      <div class="stat-card" [routerLink]="['/issues']">
+        <div class="stat-icon-wrapper success">
+          <mat-icon>task_alt</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{ resolvedIssues }}</h2>
+          <span>Resolved Issues</span>
+        </div>
       </div>
 
     </div>
 
-    <div class="hero-visual">
+    <!-- Charts & Analytics Section -->
+    <div class="charts-grid">
+      
+      <!-- Issue Status Distribution Chart -->
+      <div class="panel chart-panel">
+        <div class="panel-header">
+          <h3>Issue Status Distribution</h3>
+          <span class="badge">{{ totalIssues }} Issues</span>
+        </div>
+        <div class="chart-content">
+          @for (stat of statusStats; track stat.status) {
+            <div class="chart-row">
+              <div class="chart-label">
+                <span class="dot" [style.background-color]="stat.color"></span>
+                <span class="name">{{ stat.status }}</span>
+              </div>
+              <div class="chart-bar-container">
+                <div class="chart-bar" [style.width.%]="stat.percentage" [style.background-color]="stat.color"></div>
+              </div>
+              <div class="chart-value">
+                <strong>{{ stat.count }}</strong>
+                <span class="percent">({{ stat.percentage | number:'1.0-0' }}%)</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <mat-icon>bar_chart</mat-icon>
+              <p>No status data available.</p>
+            </div>
+          }
+        </div>
+      </div>
 
-      <div class="circle one"></div>
-      <div class="circle two"></div>
-
-      <div class="mini-card">
-        <mat-icon>whatshot</mat-icon>
-
-        <div>
-          <strong>Critical Bugs</strong>
-          <p>Need attention</p>
+      <!-- Priority Distribution Chart -->
+      <div class="panel chart-panel">
+        <div class="panel-header">
+          <h3>Priority Distribution</h3>
+          <span class="badge">{{ totalIssues }} Issues</span>
+        </div>
+        <div class="chart-content">
+          @for (stat of priorityStats; track stat.priority) {
+            <div class="chart-row">
+              <div class="chart-label">
+                <span class="dot" [style.background-color]="stat.color"></span>
+                <span class="name">{{ stat.priority }}</span>
+              </div>
+              <div class="chart-bar-container">
+                <div class="chart-bar" [style.width.%]="stat.percentage" [style.background-color]="stat.color"></div>
+              </div>
+              <div class="chart-value">
+                <strong>{{ stat.count }}</strong>
+                <span class="percent">({{ stat.percentage | number:'1.0-0' }}%)</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <mat-icon>bar_chart</mat-icon>
+              <p>No priority data available.</p>
+            </div>
+          }
         </div>
       </div>
 
     </div>
-  </div>
 
-  <div class="stats-grid">
+    <!-- Feeds Section (Recent Activities & Latest Projects) -->
+    <div class="dashboard-grid">
 
-    <article
-      class="stat-card"
-      *ngFor="let stat of stats; trackBy: trackByStat"
-    >
-      <div class="stat-icon">
-        <mat-icon>{{ stat.icon }}</mat-icon>
-      </div>
-
-      <div>
-        <p>{{ stat.title }}</p>
-        <h3>{{ stat.value }}</h3>
-        <span>{{ stat.helper }}</span>
-      </div>
-    </article>
-
-  </div>
-
-  <div class="content-grid">
-
-    <section class="panel">
-
-      <div class="panel-header">
-        <h3>Recent Issues</h3>
-
-        <button [routerLink]="['/issues']">
-          View All
-        </button>
-      </div>
-
-      <div class="issue-list">
-
-        <div
-          class="issue-row"
-          *ngFor="let issue of recentIssues; trackBy: trackByIssue"
-        >
-          <div>
-
-            <h4>{{ issue.title }}</h4>
-
-            <!--
-              WHY:
-              project can be either:
-              string | Project
-
-              Showing string value avoids:
-              TS2339 Property 'title' does not exist
-            -->
-            <p>{{ issue.project }}</p>
-
-          </div>
-
-          <div class="badges">
-
-            <span
-              class="priority"
-              [ngClass]="issue.priority"
-            >
-              {{ issue.priority }}
-            </span>
-
-            <span class="status">
-              {{ issue.status }}
-            </span>
-
-          </div>
+      <!-- Recent Activity Feed -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Recent Activity</h3>
+          <a routerLink="/activity" class="view-all">View All</a>
         </div>
 
-        <div *ngIf="recentIssues.length === 0">
-          No issues found.
+        <div class="activity-timeline">
+          @for (activity of recentActivities; track activity._id) {
+            <div class="activity-item">
+              <div class="activity-icon-wrapper" [ngClass]="activity.action">
+                <mat-icon>{{ getActivityIcon(activity.action) }}</mat-icon>
+              </div>
+              <div class="activity-details">
+                <p class="activity-text">{{ getActivityText(activity) }}</p>
+                <span class="activity-time">{{ activity.createdAt | date:'medium' }}</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-feed">
+              <mat-icon>history</mat-icon>
+              <p>No recent activity logged in this workspace.</p>
+            </div>
+          }
         </div>
-
       </div>
 
-    </section>
+      <!-- Latest Projects List -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Latest Projects</h3>
+          <a routerLink="/projects" class="view-all">View All</a>
+        </div>
 
-    <section class="panel">
-
-      <div class="panel-header">
-        <h3>Workflow Health</h3>
+        <div class="project-list">
+          @for (project of recentProjects; track project._id) {
+            <div class="project-row" [routerLink]="['/projects', project._id]">
+              <div class="project-icon-wrapper">
+                <mat-icon>folder</mat-icon>
+              </div>
+              <div class="project-info">
+                <strong>{{ project.title }}</strong>
+                <p>{{ project.description || 'No description provided.' }}</p>
+              </div>
+              <div class="project-meta">
+                <span>
+                  <mat-icon>group</mat-icon>
+                  {{ project.members?.length || 0 }} members
+                </span>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-feed">
+              <mat-icon>folder_off</mat-icon>
+              <p>No projects found. Create your first project to start tracking.</p>
+            </div>
+          }
+        </div>
       </div>
 
-      <div class="progress-box">
+    </div>
 
-        <div class="progress-item">
-          <span>Open</span>
-          <div class="bar">
-            <div style="width:72%"></div>
-          </div>
-        </div>
-
-        <div class="progress-item">
-          <span>In Progress</span>
-          <div class="bar">
-            <div style="width:55%"></div>
-          </div>
-        </div>
-
-        <div class="progress-item">
-          <span>Resolved</span>
-          <div class="bar">
-            <div style="width:84%"></div>
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
+  }
 
 </section>
