@@ -1,0 +1,33 @@
+<div class="table-toolbar">
+  @if (showSearch) {
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        [placeholder]="searchPlaceholder"
+        [ngModel]="searchValue"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+  }
+
+  <div class="toolbar-filters-actions">
+    <!-- Inject feature-specific filters here -->
+    <ng-content select="[filters]"></ng-content>
+
+    <div class="toolbar-actions">
+      <ng-content select="[actions]"></ng-content>
+
+      @if (showRefresh) {
+        <button (click)="onRefresh()" class="toolbar-btn" title="Refresh data" type="button">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      }
+
+      <button (click)="onReset()" class="toolbar-btn reset-btn" title="Clear filters & search" type="button">
+        <mat-icon>restart_alt</mat-icon>
+        Clear
+      </button>
+    </div>
+  </div>
+</div>

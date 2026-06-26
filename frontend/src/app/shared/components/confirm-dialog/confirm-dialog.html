@@ -1,0 +1,32 @@
+<div class="confirm-dialog-container">
+  <div class="dialog-header">
+    @if (data.isDelete) {
+      <div class="header-icon-warning">
+        <mat-icon>warning</mat-icon>
+      </div>
+    } @else {
+      <div class="header-icon-info">
+        <mat-icon>help_outline</mat-icon>
+      </div>
+    }
+    <h2 mat-dialog-title>{{ data.title || 'Confirm Action' }}</h2>
+  </div>
+
+  <mat-dialog-content>
+    <p>{{ data.message || 'Are you sure you want to proceed?' }}</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button class="cancel-btn" (click)="dialogRef.close(false)">
+      {{ data.cancelText || 'Cancel' }}
+    </button>
+    <button
+      mat-button
+      [class.delete-confirm-btn]="data.isDelete"
+      [class.confirm-btn]="!data.isDelete"
+      (click)="dialogRef.close(true)"
+    >
+      {{ data.confirmText || (data.isDelete ? 'Delete' : 'Confirm') }}
+    </button>
+  </mat-dialog-actions>
+</div>

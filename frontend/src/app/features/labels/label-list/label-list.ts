@@ -4,24 +4,34 @@
  * WHY:
  * Displays all labels for a selected project workspace.
  * Allows quick creation, editing, and deletion of project-scoped labels.
+ * Utilises shared PageHeader, LoadingSpinner, EmptyState, and ConfirmDialog.
  */
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+
 import { LabelService } from '../../../core/services/label';
 import { ProjectService } from '../../../core/services/project';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { EmptyState } from '../../../shared/components/empty-state/empty-state';
+import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-label-list',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
     MatIconModule,
+    MatDialogModule,
+    PageHeader,
+    LoadingSpinner,
+    EmptyState,
   ],
   templateUrl: './label-list.html',
   styleUrl: './label-list.css',
@@ -35,7 +45,8 @@ export class LabelList implements OnInit {
   constructor(
     private labelService: LabelService,
     private projectService: ProjectService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -73,15 +84,27 @@ export class LabelList implements OnInit {
   }
 
   deleteLabel(id: string): void {
-    if (!confirm('Are you sure you want to delete this label?')) return;
-    
-    this.labelService.deleteLabel(this.selectedProjectId, id).subscribe({
-      next: () => {
-        this.loadLabels();
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      data: {
+        title: 'Delete Label?',
+        message: 'Are you sure you want to delete this label? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        isDelete: true,
       },
-      error: (err) => {
-        alert(err?.error?.message || 'Failed to delete label.');
-      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.labelService.deleteLabel(this.selectedProjectId, id).subscribe({
+          next: () => {
+            this.loadLabels();
+          },
+          error: (err) => {
+            alert(err?.error?.message || 'Failed to delete label.');
+          },
+        });
+      }
     });
   }
 

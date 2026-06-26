@@ -1,16 +1,9 @@
 <section class="dashboard">
 
   @if (loading) {
-    <div class="dashboard-loading">
-      <mat-icon class="spinner">hourglass_empty</mat-icon>
-      <p>Loading your workspace overview...</p>
-    </div>
+    <app-loading-spinner message="Loading your workspace overview..."></app-loading-spinner>
   } @else if (errorMessage) {
-    <div class="dashboard-error">
-      <mat-icon>error_outline</mat-icon>
-      <p>{{ errorMessage }}</p>
-      <button (click)="loadDashboard()" class="retry-btn">Retry</button>
-    </div>
+    <app-error-state [message]="errorMessage" (retry)="loadDashboard()"></app-error-state>
   } @else {
 
     <!-- Welcome & Hero Header -->

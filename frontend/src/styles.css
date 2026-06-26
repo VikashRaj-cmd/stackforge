@@ -768,3 +768,269 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
   50% { opacity: 0.08; filter: blur(140px) hue-rotate(15deg); }
   100% { opacity: 0.04; filter: blur(120px) hue-rotate(0deg); }
 }
+
+/* =======================================================
+   COMPREHENSIVE GLOBAL THEME SYNC SYSTEM (STAGES F16-F18)
+   ======================================================= */
+
+/* ── 1. Global Page Backgrounds & Colors ── */
+body.dark-theme {
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme header,
+body.dark-theme main,
+body.dark-theme section,
+body.dark-theme article,
+body.dark-theme aside,
+body.dark-theme form,
+body.dark-theme table,
+body.dark-theme tbody,
+body.dark-theme thead,
+body.dark-theme .app-shell-container,
+body.dark-theme .page-content {
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
+}
+
+/* ── 2. Force Dark Theme Card, Panel, & Container Backgrounds ── */
+body.dark-theme .panel,
+body.dark-theme .card,
+body.dark-theme .stat-card,
+body.dark-theme .project-card,
+body.dark-theme .issue-card,
+body.dark-theme .label-card,
+body.dark-theme .user-card,
+body.dark-theme .profile-card,
+body.dark-theme .settings-card,
+body.dark-theme .form-panel,
+body.dark-theme .filters-card,
+body.dark-theme .table-card,
+body.dark-theme .project-selector-card,
+body.dark-theme .controls-card,
+body.dark-theme .header-card,
+body.dark-theme .timeline-card,
+body.dark-theme .auth-card,
+body.dark-theme .member-card,
+body.dark-theme .project-row,
+body.dark-theme .board-column,
+body.dark-theme .table-toolbar,
+body.dark-theme .empty-state,
+body.dark-theme .error-state,
+body.dark-theme .content-container,
+body.dark-theme .timeline-panel,
+body.dark-theme .confirm-dialog-container,
+body.dark-theme .loading-state {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+/* Row Hover Transitions */
+body.dark-theme tr:hover,
+body.dark-theme .project-row:hover,
+body.dark-theme .issue-row:hover,
+body.dark-theme .data-table tbody tr:hover {
+  background-color: #243049 !important;
+}
+
+/* ── 3. Typographical Contrast in Dark Theme ── */
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6,
+body.dark-theme th,
+body.dark-theme td,
+body.dark-theme dt,
+body.dark-theme dd,
+body.dark-theme li,
+body.dark-theme strong,
+body.dark-theme .timeline-heading strong,
+body.dark-theme .detail-item .value,
+body.dark-theme .project-info strong,
+body.dark-theme .user-name,
+body.dark-theme .dh-name,
+body.dark-theme .profile-name,
+body.dark-theme .col-title,
+body.dark-theme .chart-value strong {
+  color: #f8fafc !important;
+}
+
+body.dark-theme p,
+body.dark-theme label,
+body.dark-theme small,
+body.dark-theme .subtext,
+body.dark-theme .subtitle,
+body.dark-theme .description,
+body.dark-theme .description-content,
+body.dark-theme .description-section h3,
+body.dark-theme .timestamp,
+body.dark-theme .timeline-heading,
+body.dark-theme .user-email,
+body.dark-theme .welcome,
+body.dark-theme .date-cell,
+body.dark-theme .date-text,
+body.dark-theme .email-text,
+body.dark-theme .small-text,
+body.dark-theme .label-color-code,
+body.dark-theme .detail-item .label,
+body.dark-theme .meta-label,
+body.dark-theme .card-footer,
+body.dark-theme .meta,
+body.dark-theme .meta span,
+body.dark-theme .assignee,
+body.dark-theme .due-date span {
+  color: #cbd5e1 !important;
+}
+
+/* Explicit overrides for Links in Dark Theme */
+body.dark-theme a.back-link,
+body.dark-theme a.view-all,
+body.dark-theme .item-title a,
+body.dark-theme .timeline-actor,
+body.dark-theme .actor-link {
+  color: #818cf8 !important;
+}
+
+body.dark-theme a.back-link:hover,
+body.dark-theme a.view-all:hover,
+body.dark-theme .actor-link:hover {
+  color: #a5b4fc !important;
+  text-decoration: underline !important;
+}
+
+/* ── 4. Forms, Inputs & Autocomplete Suggestions ── */
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select,
+body.dark-theme .search-box {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+  color: #64748b !important;
+}
+
+body.dark-theme .project-icon-wrapper,
+body.dark-theme .stat-icon-wrapper {
+  background-color: #0f172a !important;
+  color: #818cf8 !important;
+}
+
+body.dark-theme .activity-icon-wrapper {
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 0 0 2px #334155 !important;
+}
+
+body.dark-theme .panel-header {
+  border-bottom-color: #334155 !important;
+}
+
+body.dark-theme .panel-header .badge {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme .chart-bar-container {
+  background-color: #0f172a !important;
+}
+
+body.dark-theme .description-section,
+body.dark-theme .timeline::before,
+body.dark-theme .timeline-badge {
+  border-color: #334155 !important;
+  background-color: #1e293b !important;
+}
+
+body.dark-theme .timeline::before {
+  background-color: #334155 !important;
+}
+
+/* Kanban Overrides for Dark Theme */
+body.dark-theme .column-header.open { border-bottom-color: #818cf8 !important; color: #a5b4fc !important; }
+body.dark-theme .column-header.in-progress { border-bottom-color: #38bdf8 !important; color: #7dd3fc !important; }
+body.dark-theme .column-header.in-review { border-bottom-color: #f472b6 !important; color: #f9a8d4 !important; }
+body.dark-theme .column-header.resolved { border-bottom-color: #34d399 !important; color: #6ee7b7 !important; }
+body.dark-theme .column-header.closed { border-bottom-color: #94a3b8 !important; color: #cbd5e1 !important; }
+body.dark-theme .card-footer { border-top-color: #334155 !important; }
+body.dark-theme .assignee { color: #cbd5e1 !important; }
+body.dark-theme .project-tag { color: #cbd5e1 !important; }
+
+/* Overlay Container Dialog Surface overrides in Dark Theme */
+body.dark-theme .mat-mdc-dialog-surface {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-radius: 12px !important;
+}
+
+
+/* ── 5. LIGHT THEME SYNC SYSTEM (SWITCH BACK FORCE) ── */
+body.light-theme {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+body.light-theme header,
+body.light-theme main,
+body.light-theme section,
+body.light-theme article,
+body.light-theme aside,
+body.light-theme form,
+body.light-theme table,
+body.light-theme tbody,
+body.light-theme thead,
+body.light-theme .app-shell-container,
+body.light-theme .page-content {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .panel,
+body.light-theme .card,
+body.light-theme .stat-card,
+body.light-theme .project-card,
+body.light-theme .issue-card,
+body.light-theme .label-card,
+body.light-theme .user-card,
+body.light-theme .profile-card,
+body.light-theme .settings-card,
+body.light-theme .form-panel,
+body.light-theme .filters-card,
+body.light-theme .table-card,
+body.light-theme .project-selector-card,
+body.light-theme .controls-card,
+body.light-theme .header-card,
+body.light-theme .timeline-card,
+body.light-theme .auth-card,
+body.light-theme .member-card,
+body.light-theme .project-row,
+body.light-theme .board-column,
+body.light-theme .table-toolbar,
+body.light-theme .empty-state,
+body.light-theme .error-state,
+body.light-theme .content-container,
+body.light-theme .timeline-panel,
+body.light-theme .confirm-dialog-container,
+body.light-theme .loading-state {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .mat-mdc-dialog-surface {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 12px !important;
+}

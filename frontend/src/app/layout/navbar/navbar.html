@@ -3,18 +3,106 @@
 
   WHY:
   Top navbar with search, profile dropdown (profile, settings, logout).
+  Includes hamburger menu for mobile layouts and suggestions for search results.
 -->
 
 <header class="navbar">
-  <div>
-    <p class="welcome">Welcome back</p>
-    <h1>Issue Tracking Dashboard</h1>
+  <div class="left-section">
+    <button class="mobile-toggle-btn" (click)="onToggleSidebar()" aria-label="Toggle Sidebar" type="button">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div>
+      <p class="welcome">Welcome back</p>
+      <h1>Issue Tracking Dashboard</h1>
+    </div>
   </div>
 
   <div class="right-section">
-    <div class="search-box">
-      <mat-icon>search</mat-icon>
-      <input type="text" placeholder="Search issues, projects..." />
+    <div class="search-box-container">
+      <div class="search-box">
+        <mat-icon>search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search issues, projects, users..."
+          [ngModel]="searchQuery"
+          (input)="onSearchInput(searchQueryInput.value)"
+          #searchQueryInput
+          (focus)="showSuggestions = true"
+        />
+        @if (searchLoading) {
+          <span class="search-spinner">
+            <mat-icon class="spin">hourglass_top</mat-icon>
+          </span>
+        }
+      </div>
+
+      <!-- Suggestions Overlay -->
+      @if (showSuggestions && (searchResults.projects.length > 0 || searchResults.issues.length > 0 || searchResults.users.length > 0 || searchResults.labels.length > 0)) {
+        <div class="search-suggestions-overlay">
+          <!-- Projects -->
+          @if (searchResults.projects.length > 0) {
+            <div class="suggestion-group">
+              <div class="group-title">Projects</div>
+              @for (project of searchResults.projects; track project._id) {
+                <div class="suggestion-item" (click)="selectSuggestion('project', project._id)">
+                  <mat-icon class="item-icon">folder</mat-icon>
+                  <div class="item-details">
+                    <span class="item-title">{{ project.title }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Issues -->
+          @if (searchResults.issues.length > 0) {
+            <div class="suggestion-group">
+              <div class="group-title">Issues</div>
+              @for (issue of searchResults.issues; track issue._id) {
+                <div class="suggestion-item" (click)="selectSuggestion('issue', issue._id)">
+                  <mat-icon class="item-icon">bug_report</mat-icon>
+                  <div class="item-details">
+                    <span class="item-title">{{ issue.title }}</span>
+                    <span class="item-subtitle">{{ issue.project?.title || 'No Project' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Users -->
+          @if (searchResults.users.length > 0) {
+            <div class="suggestion-group">
+              <div class="group-title">Users</div>
+              @for (user of searchResults.users; track user._id) {
+                <div class="suggestion-item" (click)="selectSuggestion('user', user._id)">
+                  <mat-icon class="item-icon">person</mat-icon>
+                  <div class="item-details">
+                    <span class="item-title">{{ user.name }}</span>
+                    <span class="item-subtitle">{{ user.email }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Labels -->
+          @if (searchResults.labels.length > 0) {
+            <div class="suggestion-group">
+              <div class="group-title">Labels</div>
+              @for (label of searchResults.labels; track label._id) {
+                <div class="suggestion-item" (click)="selectSuggestion('label', label._id, label.projectId)">
+                  <mat-icon class="item-icon" [style.color]="label.color">label</mat-icon>
+                  <div class="item-details">
+                    <span class="item-title">{{ label.name }}</span>
+                    <span class="item-subtitle">Project: {{ label.projectTitle }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <button class="nav-notification-btn" routerLink="/notifications" aria-label="Notifications" type="button">

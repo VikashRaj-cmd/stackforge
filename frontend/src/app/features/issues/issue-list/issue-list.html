@@ -3,33 +3,28 @@
 
   WHY:
   Provides a clean, filterable list of issues inside a responsive data table.
+  Utilises shared components for uniform layouts.
 -->
 
 <section class="issue-page">
-  <div class="page-header">
-    <div>
-      <p class="eyebrow">Workspace Management</p>
-      <h2>Issue Tracker</h2>
-    </div>
-    <a routerLink="/issues/create" class="create-btn">
-      <mat-icon>add</mat-icon>
-      Create Issue
-    </a>
-  </div>
+  <!-- Reusable Page Header -->
+  <app-page-header
+    title="Issue Tracker"
+    subtitle="Manage and track issues in your workspace."
+    eyebrow="Workspace Management"
+    actionText="Create Issue"
+    actionRoute="/issues/create"
+  ></app-page-header>
 
-  <!-- Filters Panel -->
-  <div class="filters-card">
-    <div class="search-box">
-      <mat-icon>search</mat-icon>
-      <input
-        type="text"
-        [(ngModel)]="search"
-        (ngModelChange)="loadIssues()"
-        placeholder="Search issues by title or description..."
-      />
-    </div>
-
-    <div class="select-filters">
+  <!-- Reusable Table Toolbar -->
+  <app-table-toolbar
+    searchPlaceholder="Search issues by title or description..."
+    [(searchValue)]="search"
+    (searchValueChange)="loadIssues()"
+    (refresh)="loadIssues()"
+    (reset)="resetFilters()"
+  >
+    <div class="select-filters" filters>
       <div class="filter-group">
         <label>Status</label>
         <select [(ngModel)]="status" (change)="loadIssues()">
@@ -63,29 +58,23 @@
           <option value="improvement">Improvement</option>
         </select>
       </div>
-
-      <button (click)="resetFilters()" class="reset-btn">
-        <mat-icon>restart_alt</mat-icon>
-        Clear
-      </button>
     </div>
-  </div>
+  </app-table-toolbar>
 
   <!-- Loading State -->
   @if (loading) {
-    <div class="empty-state">
-      <mat-icon class="spin">hourglass_top</mat-icon>
-      <p>Loading issues...</p>
-    </div>
+    <app-loading-spinner message="Loading issues..."></app-loading-spinner>
   }
 
   <!-- Empty State -->
   @if (!loading && issues.length === 0) {
-    <div class="empty-state">
-      <mat-icon>bug_report</mat-icon>
-      <h3>No Issues Found</h3>
-      <p>Try refining your search or create a new issue to get started.</p>
-    </div>
+    <app-empty-state
+      icon="bug_report"
+      title="No Issues Found"
+      message="Try refining your search or create a new issue to get started."
+      actionText="Create Issue"
+      actionRoute="/issues/create"
+    ></app-empty-state>
   }
 
   <!-- Issues Table -->

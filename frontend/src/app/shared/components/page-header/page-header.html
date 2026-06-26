@@ -1,0 +1,25 @@
+<div class="page-header-container">
+  <div>
+    @if (eyebrow) {
+      <p class="eyebrow">{{ eyebrow }}</p>
+    }
+    <h2>{{ title }}</h2>
+    @if (subtitle) {
+      <p class="subtitle">{{ subtitle }}</p>
+    }
+  </div>
+  
+  @if (actionText) {
+    @if (actionRoute) {
+      <a [routerLink]="actionRoute" class="create-btn">
+        <mat-icon>{{ actionIcon }}</mat-icon>
+        {{ actionText }}
+      </a>
+    } @else {
+      <button (click)="onAction()" class="create-btn" type="button">
+        <mat-icon>{{ actionIcon }}</mat-icon>
+        {{ actionText }}
+      </button>
+    }
+  }
+</div>

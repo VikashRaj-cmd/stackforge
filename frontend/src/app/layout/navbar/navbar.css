@@ -1,5 +1,8 @@
 /**
  * navbar.css
+ *
+ * WHY:
+ * Styling for top navbar, search autocomplete suggestions list, and mobile toggle menu.
  */
 
 .navbar {
@@ -12,6 +15,34 @@
   align-items: center;
 }
 
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mobile-toggle-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+body.dark-theme .mobile-toggle-btn {
+  color: #cbd5e1;
+}
+
+.mobile-toggle-btn mat-icon {
+  font-size: 26px;
+  width: 26px;
+  height: 26px;
+}
+
 .welcome {
   margin: 0;
   color: #64748b;
@@ -20,7 +51,8 @@
 
 .navbar h1 {
   margin: 4px 0 0;
-  font-size: 24px;
+  font-size: 22px;
+  font-weight: 700;
   color: #0f172a;
 }
 
@@ -30,8 +62,14 @@
   gap: 18px;
 }
 
-.search-box {
+/* ── Search Container ── */
+.search-box-container {
+  position: relative;
   width: 320px;
+}
+
+.search-box {
+  width: 100%;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
@@ -50,6 +88,128 @@
   outline: none;
   background: transparent;
   width: 100%;
+  font-size: 14px;
+}
+
+.search-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ── Suggestions Dropdown Overlay ── */
+.search-suggestions-overlay {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  max-height: 380px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  padding: 6px 0;
+}
+
+body.dark-theme .search-suggestions-overlay {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.suggestion-group {
+  margin-bottom: 8px;
+}
+
+.suggestion-group:last-child {
+  margin-bottom: 0;
+}
+
+.group-title {
+  padding: 6px 16px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+body.dark-theme .group-title {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.suggestion-item:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+body.dark-theme .suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.item-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+body.dark-theme .item-icon {
+  color: #cbd5e1;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dark-theme .item-title {
+  color: #f8fafc;
+}
+
+.item-subtitle {
+  font-size: 10.5px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dark-theme .item-subtitle {
+  color: #94a3b8;
 }
 
 /* ── Notification Bell Button & Theme Toggle Button ── */
@@ -234,20 +394,46 @@
   background: #fef2f2;
 }
 
+/* ── Responsive Navbar styling ── */
 @media (max-width: 900px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+  .mobile-toggle-btn {
+    display: inline-flex;
   }
 
-  .right-section {
-    width: 100%;
-    flex-wrap: wrap;
+  .navbar {
+    padding: 12px 18px;
+    min-height: 72px;
+    gap: 12px;
+  }
+
+  .navbar h1 {
+    font-size: 18px;
+  }
+
+  .welcome {
+    display: none;
+  }
+
+  .search-box-container {
+    width: 220px;
   }
 
   .search-box {
-    width: auto;
-    flex: 1;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .profile-info {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar h1 {
+    display: none; /* Hide "Issue Tracking Dashboard" header on tiny phones to save space */
+  }
+
+  .search-box-container {
+    width: 150px;
   }
 }

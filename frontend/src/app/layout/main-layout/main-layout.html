@@ -2,17 +2,25 @@
   main-layout.component.html
 
   WHY:
-  Creates professional dashboard layout with fixed sidebar and top navbar.
+  Creates responsive dashboard layout with sliding sidebar drawer (Material Sidenav)
+  for smaller screens and fixed sidebar for desktop screens.
 -->
 
-<div class="app-shell">
-  <app-sidebar></app-sidebar>
+<mat-sidenav-container class="app-shell-container">
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    class="app-sidebar-drawer"
+  >
+    <app-sidebar (linkClicked)="isMobile ? sidenav.close() : null"></app-sidebar>
+  </mat-sidenav>
 
-  <main class="main-area">
-    <app-navbar></app-navbar>
+  <mat-sidenav-content class="main-area">
+    <app-navbar (toggleSidebar)="sidenav.toggle()"></app-navbar>
 
     <section class="page-content">
       <router-outlet></router-outlet>
     </section>
-  </main>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

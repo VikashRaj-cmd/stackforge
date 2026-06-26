@@ -6,7 +6,7 @@
  * Uses Angular Material icons instead of emojis.
  */
 
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,12 @@ interface NavItem {
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+  @Output() linkClicked = new EventEmitter<void>();
+
+  onLinkClick(): void {
+    this.linkClicked.emit();
+  }
+
   navItems: NavItem[] = [
     {
       label: 'Dashboard',

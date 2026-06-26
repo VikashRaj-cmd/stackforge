@@ -13,6 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { DashboardService } from '../../../core/services/dashboard';
 import { AuthService } from '../../../core/services/auth';
 import { User } from '../../../core/models/user.model';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { ErrorState } from '../../../shared/components/error-state/error-state';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +23,8 @@ import { User } from '../../../core/models/user.model';
     CommonModule,
     MatIconModule,
     RouterLink,
+    LoadingSpinner,
+    ErrorState,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',

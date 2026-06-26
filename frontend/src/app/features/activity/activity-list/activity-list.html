@@ -1,78 +1,94 @@
-<div class="page-header">
-  <div class="header-title-area">
-    <div class="header-icon">
-      <mat-icon>history</mat-icon>
-    </div>
-    <div>
-      <h1>Activity Logs</h1>
-      <p class="subtitle">Auditing global event logs and system actions chronologically.</p>
-    </div>
-  </div>
-</div>
+<!--
+  activity-list.html
 
-<div class="content-container">
-  @if (loading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading activity logs...</p>
-    </div>
-  } @else if (errorMessage) {
-    <div class="error-state">
-      <mat-icon class="error-icon">error_outline</mat-icon>
-      <h3>Error Loading Activities</h3>
-      <p>{{ errorMessage }}</p>
-    </div>
+  WHY:
+  Displays audit timeline logs.
+  Utilises shared components for uniform layouts.
+-->
+
+<section class="activity-page">
+  <!-- Reusable Page Header -->
+  <app-page-header
+    title="Activity Logs"
+    subtitle="Auditing global event logs and system actions chronologically."
+    eyebrow="Workspace Management"
+    actionText=""
+  ></app-page-header>
+
+  @if (errorMessage) {
+    <!-- Reusable Error State -->
+    <app-error-state
+      [message]="errorMessage"
+      (retry)="loadActivities()"
+    ></app-error-state>
   } @else {
-    <div class="timeline-card">
-      <div class="card-header">
-        <h2>System Audit Trail ({{ activities.length }})</h2>
-      </div>
+    <!-- Reusable Toolbar for search -->
+    <app-table-toolbar
+      searchPlaceholder="Search audit trail by actor, action or issue details..."
+      [(searchValue)]="search"
+      (searchValueChange)="filterActivities()"
+      (refresh)="loadActivities()"
+      (reset)="search = ''; filterActivities()"
+      [showRefresh]="true"
+    ></app-table-toolbar>
 
-      <div class="timeline-container">
-        <div class="timeline">
-          @for (activity of activities; track activity._id) {
-            <div class="timeline-item">
-              <div class="timeline-badge" [class]="activity.action">
-                <mat-icon>{{ getActivityIcon(activity.action) }}</mat-icon>
-              </div>
-              <div class="timeline-panel">
-                <div class="timeline-meta">
-                  <div class="actor-info">
-                    @if (activity.actor?.avatar) {
-                      <img [src]="activity.actor.avatar" [alt]="activity.actor.name" class="actor-avatar" />
-                    } @else {
-                      <div class="actor-avatar-placeholder">
-                        <mat-icon>person</mat-icon>
-                      </div>
-                    }
-                    <a [routerLink]="['/users', activity.actor?._id]" class="actor-link">
-                      {{ activity.actor?.name }}
-                    </a>
+    <!-- Loading State -->
+    @if (loading) {
+      <app-loading-spinner message="Loading activity logs..."></app-loading-spinner>
+    }
+
+    <!-- Empty State -->
+    @if (!loading && filteredActivities.length === 0) {
+      <app-empty-state
+        icon="history"
+        title="No History Found"
+        message="No system activity logs match your search criteria."
+      ></app-empty-state>
+    }
+
+    <!-- Timeline Audit Trail -->
+    @if (!loading && filteredActivities.length > 0) {
+      <div class="timeline-card">
+        <div class="timeline-container">
+          <div class="timeline">
+            @for (activity of filteredActivities; track activity._id) {
+              <div class="timeline-item">
+                <div class="timeline-badge" [class]="activity.action">
+                  <mat-icon>{{ getActivityIcon(activity.action) }}</mat-icon>
+                </div>
+                <div class="timeline-panel">
+                  <div class="timeline-meta">
+                    <div class="actor-info">
+                      @if (activity.actor?.avatar) {
+                        <img [src]="activity.actor.avatar" [alt]="activity.actor.name" class="actor-avatar" />
+                      } @else {
+                        <div class="actor-avatar-placeholder">
+                          <mat-icon>person</mat-icon>
+                        </div>
+                      }
+                      <a [routerLink]="['/users', activity.actor?._id]" class="actor-link">
+                        {{ activity.actor?.name }}
+                      </a>
+                    </div>
+                    <span class="timeline-time">{{ activity.createdAt | date:'medium' }}</span>
                   </div>
-                  <span class="timeline-time">{{ activity.createdAt | date:'medium' }}</span>
-                </div>
-                <div class="timeline-content">
-                  <p class="timeline-text">
-                    {{ getActivityText(activity) }}
-                  </p>
-                  @if (activity.issue) {
-                    <a [routerLink]="['/issues', activity.issue._id]" class="issue-link-btn">
-                      <mat-icon>launch</mat-icon>
-                      <span>View Issue</span>
-                    </a>
-                  }
+                  <div class="timeline-content">
+                    <p class="timeline-text">
+                      {{ getActivityText(activity) }}
+                    </p>
+                    @if (activity.issue) {
+                      <a [routerLink]="['/issues', activity.issue._id]" class="issue-link-btn">
+                        <mat-icon>launch</mat-icon>
+                        <span>View Issue</span>
+                      </a>
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-          } @empty {
-            <div class="empty-state">
-              <mat-icon>history_toggle_off</mat-icon>
-              <h3>No History Found</h3>
-              <p>No system activity logs have been recorded yet.</p>
-            </div>
-          }
+            }
+          </div>
         </div>
       </div>
-    </div>
+    }
   }
-</div>
+</section>

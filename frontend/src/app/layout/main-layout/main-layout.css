@@ -2,19 +2,31 @@
  * main-layout.component.css
  *
  * WHY:
- * Controls the main dashboard layout.
+ * Controls the main dashboard layout container and responsive drawer width.
  */
 
-.app-shell {
+.app-shell-container {
   min-height: 100vh;
-  display: flex;
   background: #f5f7fb;
 }
 
+body.dark-theme .app-shell-container {
+  background: #0f172a;
+}
+
+.app-sidebar-drawer {
+  width: 270px;
+  border-right: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+body.dark-theme .app-sidebar-drawer {
+  background: #1e293b;
+  border-right-color: #334155;
+}
+
 .main-area {
-  flex: 1;
-  min-width: 0;
-  margin-left: 270px;
+  background: transparent;
 }
 
 .page-content {
@@ -22,11 +34,7 @@
 }
 
 @media (max-width: 900px) {
-  .main-area {
-    margin-left: 0;
-  }
-
   .page-content {
-    padding: 18px;
+    padding: 16px;
   }
 }

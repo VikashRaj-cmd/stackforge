@@ -3,14 +3,20 @@
  *
  * WHY:
  * Displays a global audit log timeline of all actions taken across the tracker.
- * Shows status updates, comment creations, issue assignments, and priority changes.
+ * Utilises shared components (PageHeader, LoadingSpinner, EmptyState, ErrorState, TableToolbar).
  */
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+
 import { ActivityService } from '../../../core/services/activity';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { EmptyState } from '../../../shared/components/empty-state/empty-state';
+import { ErrorState } from '../../../shared/components/error-state/error-state';
+import { TableToolbar } from '../../../shared/components/table-toolbar/table-toolbar';
 
 @Component({
   selector: 'app-activity-list',
@@ -19,6 +25,11 @@ import { ActivityService } from '../../../core/services/activity';
     CommonModule,
     RouterLink,
     MatIconModule,
+    PageHeader,
+    LoadingSpinner,
+    EmptyState,
+    ErrorState,
+    TableToolbar,
   ],
   templateUrl: './activity-list.html',
   styleUrl: './activity-list.css',
@@ -26,6 +37,8 @@ import { ActivityService } from '../../../core/services/activity';
 export class ActivityList implements OnInit {
   loading = false;
   activities: any[] = [];
+  filteredActivities: any[] = [];
+  search = '';
   errorMessage = '';
 
   constructor(private activityService: ActivityService) {}
@@ -40,6 +53,7 @@ export class ActivityList implements OnInit {
     this.activityService.getActivityLogs().subscribe({
       next: (res) => {
         this.activities = res.data || [];
+        this.filterActivities();
         this.loading = false;
       },
       error: (err) => {
@@ -50,12 +64,29 @@ export class ActivityList implements OnInit {
   }
 
   /**
+   * Client-side filter for activity logs
+   */
+  filterActivities(): void {
+    const q = this.search.trim().toLowerCase();
+    if (!q) {
+      this.filteredActivities = [...this.activities];
+    } else {
+      this.filteredActivities = this.activities.filter((act) => {
+        const text = this.getActivityText(act).toLowerCase();
+        const actor = (act.actor?.name || '').toLowerCase();
+        const action = (act.action || '').toLowerCase();
+        return text.includes(q) || actor.includes(q) || action.includes(q);
+      });
+    }
+  }
+
+  /**
    * Generates a descriptive log message depending on the action performed.
    */
   getActivityText(activity: any): string {
     const actorName = activity.actor?.name || 'Someone';
     const issueTitle = activity.issue?.title ? `"${activity.issue.title}"` : 'an issue';
-    
+
     switch (activity.action) {
       case 'status_changed':
         return `updated the status of issue ${issueTitle} from "${activity.beforeValue}" to "${activity.afterValue}"`;
@@ -74,11 +105,16 @@ export class ActivityList implements OnInit {
 
   getActivityIcon(action: string): string {
     switch (action) {
-      case 'status_changed': return 'check_circle_outline';
-      case 'assigned': return 'person_add';
-      case 'unassigned': return 'person_remove';
-      case 'commented': return 'chat_bubble_outline';
-      default: return 'history';
+      case 'status_changed':
+        return 'check_circle_outline';
+      case 'assigned':
+        return 'person_add';
+      case 'unassigned':
+        return 'person_remove';
+      case 'commented':
+        return 'chat_bubble_outline';
+      default:
+        return 'history';
     }
   }
 }

@@ -3,14 +3,12 @@
  *
  * WHY:
  * Gives the app a clean SaaS-style sidebar with Material icons.
+ * Aligns properly inside the sidenav drawer. Keep sidebar dark theme by default.
  */
 
 .sidebar {
-  width: 270px;
-  height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(180deg, #0f172a, #111827);
   color: #ffffff;
   padding: 24px;
@@ -43,6 +41,7 @@
 .brand h2 {
   font-size: 18px;
   margin: 0;
+  color: #ffffff;
 }
 
 .brand p {
@@ -102,6 +101,7 @@
 
 .sidebar-card h3 {
   margin: 6px 0 10px;
+  color: #ffffff;
 }
 
 .status-line {
@@ -117,10 +117,4 @@
   font-size: 18px;
   width: 18px;
   height: 18px;
-}
-
-@media (max-width: 900px) {
-  .sidebar {
-    display: none;
-  }
 }

@@ -1,92 +1,107 @@
-<div class="page-header">
-  <div class="header-title-area">
-    <div class="header-icon">
-      <mat-icon>groups</mat-icon>
-    </div>
-    <div>
-      <h1>Team Members</h1>
-      <p class="subtitle">Manage user directory, roles, and view developer contributions.</p>
-    </div>
-  </div>
-</div>
+<!--
+  user-list.html
 
-<div class="content-container">
-  @if (loading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading members directory...</p>
-    </div>
-  } @else if (errorMessage) {
-    <div class="error-state">
-      <mat-icon class="error-icon">lock</mat-icon>
-      <h3>Access Restricted</h3>
-      <p>{{ errorMessage }}</p>
-    </div>
+  WHY:
+  Provides a user directory view.
+  Utilises shared components for uniform layouts and clean templates.
+-->
+
+<section class="user-page">
+  <!-- Reusable Page Header -->
+  <app-page-header
+    title="Team Members"
+    subtitle="Manage user directory, roles, and view developer contributions."
+    eyebrow="Workspace Management"
+    actionText=""
+  ></app-page-header>
+
+  @if (errorMessage) {
+    <!-- Reusable Error State -->
+    <app-error-state
+      [message]="errorMessage"
+      (retry)="loadUsers()"
+    ></app-error-state>
   } @else {
-    <div class="table-card">
-      <div class="table-header">
-        <h2>All Users ({{ users.length }})</h2>
-      </div>
+    <!-- Reusable Toolbar for search -->
+    <app-table-toolbar
+      searchPlaceholder="Search team members by name, email or role..."
+      [(searchValue)]="search"
+      (searchValueChange)="filterUsers()"
+      (refresh)="loadUsers()"
+      (reset)="search = ''; filterUsers()"
+      [showRefresh]="true"
+    ></app-table-toolbar>
 
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Joined Date</th>
-              <th class="actions-col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (user of users; track user._id) {
+    <!-- Loading State -->
+    @if (loading) {
+      <app-loading-spinner message="Loading members directory..."></app-loading-spinner>
+    }
+
+    <!-- Empty State -->
+    @if (!loading && filteredUsers.length === 0) {
+      <app-empty-state
+        icon="groups"
+        title="No Members Found"
+        message="There are no team members matching your search query."
+      ></app-empty-state>
+    }
+
+    <!-- Users Table -->
+    @if (!loading && filteredUsers.length > 0) {
+      <div class="table-card">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
               <tr>
-                <td>
-                  <div class="user-cell">
-                    <div class="user-avatar-wrapper">
-                      @if (user.avatar) {
-                        <img [src]="user.avatar" [alt]="user.name" class="user-avatar" />
-                      } @else {
-                        <div class="user-avatar-placeholder">
-                          <mat-icon>person</mat-icon>
-                        </div>
-                      }
-                    </div>
-                    <div class="user-info">
-                      <span class="user-name">{{ user.name }}</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="email-text">{{ user.email }}</span>
-                </td>
-                <td>
-                  <span class="badge" [class]="getRoleBadgeClass(user.role)">
-                    {{ user.role | titlecase }}
-                  </span>
-                </td>
-                <td>
-                  <span class="date-text">{{ user.createdAt | date:'mediumDate' }}</span>
-                </td>
-                <td class="actions-col">
-                  <a [routerLink]="['/users', user._id]" class="btn btn-icon btn-secondary" title="View Profile">
-                    <mat-icon>visibility</mat-icon>
-                    <span>View</span>
-                  </a>
-                </td>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined Date</th>
+                <th class="actions-col">Actions</th>
               </tr>
-            } @empty {
-              <tr>
-                <td colspan="5" class="empty-row">
-                  <mat-icon>hourglass_empty</mat-icon>
-                  <p>No team members found.</p>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (user of filteredUsers; track user._id) {
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar-wrapper">
+                        @if (user.avatar) {
+                          <img [src]="user.avatar" [alt]="user.name" class="user-avatar" />
+                        } @else {
+                          <div class="user-avatar-placeholder">
+                            <mat-icon>person</mat-icon>
+                          </div>
+                        }
+                      </div>
+                      <div class="user-info">
+                        <span class="user-name">{{ user.name }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="email-text">{{ user.email }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [class]="getRoleBadgeClass(user.role)">
+                      {{ user.role | titlecase }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="date-text">{{ user.createdAt | date:'mediumDate' }}</span>
+                  </td>
+                  <td class="actions-col">
+                    <a [routerLink]="['/users', user._id]" class="btn btn-icon btn-secondary" title="View Profile">
+                      <mat-icon>visibility</mat-icon>
+                      <span>View</span>
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    }
   }
-</div>
+</section>
